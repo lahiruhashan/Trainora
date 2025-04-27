@@ -11,10 +11,16 @@ import SwiftUI
 struct TrainoraApp: App {
     let persistenceController = PersistenceController.shared
 
+    @StateObject private var appState = AppState()
+
     var body: some Scene {
         WindowGroup {
-            ContentView()
-                .environment(\.managedObjectContext, persistenceController.container.viewContext)
+            if appState.isSignedIn {
+                HomeView()
+            } else {
+                SignInView()
+                    .environmentObject(appState)
+            }
         }
     }
 }

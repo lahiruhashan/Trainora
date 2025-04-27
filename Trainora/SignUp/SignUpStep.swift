@@ -7,9 +7,10 @@
 
 enum SignUpStep: Hashable {
     case email
-    case gender
     case age
+    case gender
     case height
     case weight
+    case summary
 }
 

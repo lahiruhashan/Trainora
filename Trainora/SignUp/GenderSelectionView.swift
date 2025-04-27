@@ -9,8 +9,10 @@ import SwiftUI
 
 struct GenderSelectionView: View {
     @State private var selectedGender: String? = nil
-    @State private var navigateToAge = false
     @Environment(\.dismiss) var dismiss
+
+    @ObservedObject var signUpData: SignUpData
+    @Binding var path: NavigationPath
 
     var body: some View {
         VStack(spacing: 30) {
@@ -22,11 +24,15 @@ struct GenderSelectionView: View {
 
             // Gender Options
             VStack(spacing: 15) {
-                GenderOptionButton(title: "Male", isSelected: selectedGender == "Male") {
+                GenderOptionButton(
+                    title: "Male", isSelected: selectedGender == "Male"
+                ) {
                     selectedGender = "Male"
                 }
 
-                GenderOptionButton(title: "Female", isSelected: selectedGender == "Female") {
+                GenderOptionButton(
+                    title: "Female", isSelected: selectedGender == "Female"
+                ) {
                     selectedGender = "Female"
                 }
             }
@@ -36,13 +42,18 @@ struct GenderSelectionView: View {
 
             // Continue Button
             Button(action: {
-                print("Selected Gender: \(selectedGender ?? "None")")
-                navigateToAge = true
+                if let gender = selectedGender {
+                    signUpData.gender = gender
+                    path.append(3)
+                }
             }) {
                 Text("Continue")
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(selectedGender != nil ? Color.blue : Color.gray.opacity(0.5))
+                    .background(
+                        selectedGender != nil
+                            ? Color.blue : Color.gray.opacity(0.5)
+                    )
                     .foregroundColor(.white)
                     .cornerRadius(10)
             }
@@ -52,9 +63,6 @@ struct GenderSelectionView: View {
         .padding()
         .navigationTitle("Gender")
         .navigationBarBackButtonHidden(false)
-        .navigationDestination(isPresented: $navigateToAge) {
-            AgeSelectionView()
-        }
     }
 }
 
@@ -86,5 +94,8 @@ struct GenderOptionButton: View {
 }
 
 #Preview {
-    GenderSelectionView()
+    GenderSelectionView(
+        signUpData: SignUpData(),  // Dummy model instance
+        path: .constant(NavigationPath())  // Dummy binding
+    )
 }

@@ -10,6 +10,9 @@ import SwiftUI
 struct AgeSelectionView: View {
     @State private var selectedAge: Int = 28
     @Environment(\.dismiss) var dismiss
+    
+    @ObservedObject var signUpData: SignUpData
+    @Binding var path: NavigationPath
 
     var body: some View {
         VStack(spacing: 30) {
@@ -48,7 +51,8 @@ struct AgeSelectionView: View {
             // Continue Button
             Button(action: {
                 print("Selected Age: \(selectedAge)")
-                // Navigate to next screen or save value
+                signUpData.age = selectedAge
+                path.append(SignUpStep.height)
             }) {
                 Text("Continue")
                     .frame(maxWidth: .infinity)
@@ -68,5 +72,8 @@ struct AgeSelectionView: View {
 
 
 #Preview {
-    AgeSelectionView()
+    AgeSelectionView(
+        signUpData: SignUpData(),  // Dummy model instance
+        path: .constant(NavigationPath())  // Dummy binding
+    )
 }

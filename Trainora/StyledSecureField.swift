@@ -8,11 +8,33 @@
 import SwiftUI
 
 struct StyledSecureField: View {
+    var placeholder: String
+    @Binding var text: String
+    var iconName: String? = nil
+
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        HStack {
+            if let icon = iconName {
+                Image(systemName: icon)
+                    .foregroundColor(.blue)
+            }
+            
+            SecureField(placeholder, text: $text)
+                .autocapitalization(.none)
+                .disableAutocorrection(true)
+        }
+        .padding()
+        .background(Color.gray.opacity(0.1))
+        .cornerRadius(12)
+        .overlay(
+            RoundedRectangle(cornerRadius: 12)
+                .stroke(Color.blue.opacity(0.5), lineWidth: 1)
+        )
+        .padding(.horizontal)
     }
 }
 
+
 #Preview {
-    StyledSecureField()
+    StyledSecureField(placeholder: "Password", text: .constant(""), iconName: "lock.fill")
 }

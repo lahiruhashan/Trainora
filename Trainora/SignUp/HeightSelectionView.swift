@@ -8,11 +8,57 @@
 import SwiftUI
 
 struct HeightSelectionView: View {
+    @ObservedObject var signUpData: SignUpData
+    @Binding var path: NavigationPath
+    @State private var selectedHeight: Int = 170
+
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        VStack(spacing: 30) {
+            Text("What's Your Height?")
+                .font(.largeTitle)
+                .fontWeight(.bold)
+                .padding(.top)
+
+            Spacer()
+
+            // Selected Height Display
+            Text("\(selectedHeight) cm")
+                .font(.system(size: 60, weight: .bold))
+                .padding(.bottom, 10)
+
+            // Wheel Picker
+            Picker(selection: $selectedHeight, label: Text("")) {
+                ForEach(100...250, id: \.self) { height in
+                    Text("\(height)").tag(height)
+                }
+            }
+            .pickerStyle(.wheel)
+            .frame(height: 150)
+            .clipped()
+
+            Spacer()
+
+            Button(action: {
+                signUpData.height = selectedHeight
+                path.append(SignUpStep.weight)
+            }) {
+                Text("Continue")
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(Color.blue)
+                    .foregroundColor(.white)
+                    .cornerRadius(10)
+            }
+            .padding(.horizontal)
+        }
+        .padding()
     }
 }
 
+
 #Preview {
-    HeightSelectionView()
+    HeightSelectionView(
+        signUpData: SignUpData(),
+        path: .constant(NavigationPath())
+    )
 }

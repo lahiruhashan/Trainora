@@ -13,7 +13,6 @@ struct SignUpView: View {
     @State private var email = ""
     @State private var password = ""
     @State private var passwordAgain = ""
-    @State private var showDetailsScreen = false
 
     @ObservedObject var signUpData: SignUpData
     @Binding var path: NavigationPath
@@ -47,8 +46,11 @@ struct SignUpView: View {
                 iconName: "lock.rotation")
 
             Button(action: {
-                showDetailsScreen = true
-                
+                signUpData.firstName = firstName
+                signUpData.lastName = lastName
+                signUpData.email = email
+                signUpData.password = password
+                path.append(2)
             }) {
                 Text("Next")
                     .frame(maxWidth: .infinity)
@@ -62,9 +64,6 @@ struct SignUpView: View {
             Spacer()
         }
         .padding()
-        .navigationDestination(isPresented: $showDetailsScreen) {
-            GenderSelectionView()
-        }
     }
 }
 

@@ -7,24 +7,27 @@
 
 import SwiftUI
 
-struct WorkoutPickerView: View {
-    let availableWorkouts: [String]
-    var onWorkoutSelected: (String) -> Void
+struct ExercisePickerView: View {
+    let availableExercises: [Exercise]
+    var onExerciseSelected: (Exercise) -> Void
 
     @Environment(\.presentationMode) var presentationMode
 
     var body: some View {
         NavigationView {
-            List(availableWorkouts, id: \.self) { workout in
-                Button(action: {
-                    onWorkoutSelected(workout)
-                    presentationMode.wrappedValue.dismiss()
-                }) {
-                    Text(workout)
-                        .padding()
+            ScrollView {
+                VStack(spacing: 15) {
+                    ForEach(availableExercises) { exercise in
+                        ExerciseCardView(exercise: exercise)
+                            .onTapGesture {
+                                onExerciseSelected(exercise)
+                                presentationMode.wrappedValue.dismiss()
+                            }
+                    }
                 }
+                .padding()
             }
-            .navigationTitle("Select Workout")
+            .navigationTitle("Select Exercise")
             .navigationBarItems(trailing: Button("Cancel") {
                 presentationMode.wrappedValue.dismiss()
             })
@@ -32,6 +35,7 @@ struct WorkoutPickerView: View {
     }
 }
 
+
 #Preview {
-    WorkoutPickerView(availableWorkouts: ["Cardio", "Yoga"]) { _ in }
+    
 }
