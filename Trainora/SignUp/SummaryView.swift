@@ -11,6 +11,7 @@ struct SummaryView: View {
     @ObservedObject var signUpData: SignUpData
     @State private var isSaving = false
     @State private var signupComplete = false
+    var onFinish: () -> Void
 
     var body: some View {
         VStack(spacing: 30) {
@@ -44,6 +45,7 @@ struct SummaryView: View {
                 Button(action: {
                     print("User submitted signup!")
                     print("Data: \(signUpData)")
+                    onFinish()
                     // Here you would trigger actual signup process (API call etc.)
                 }) {
                     Text("Finish and Create Account")
@@ -101,5 +103,5 @@ struct SummaryRow: View {
 }
 
 #Preview {
-    SummaryView(signUpData: SignUpData())
+    SummaryView(signUpData: SignUpData(), onFinish: {})
 }

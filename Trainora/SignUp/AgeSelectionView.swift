@@ -12,7 +12,8 @@ struct AgeSelectionView: View {
     @Environment(\.dismiss) var dismiss
     
     @ObservedObject var signUpData: SignUpData
-    @Binding var path: NavigationPath
+//    @Binding var path: NavigationPath
+    var onContinue: () -> Void
 
     var body: some View {
         VStack(spacing: 30) {
@@ -52,7 +53,8 @@ struct AgeSelectionView: View {
             Button(action: {
                 print("Selected Age: \(selectedAge)")
                 signUpData.age = selectedAge
-                path.append(SignUpStep.height)
+                onContinue()
+//                path.append(SignUpStep.height)
             }) {
                 Text("Continue")
                     .frame(maxWidth: .infinity)
@@ -73,7 +75,7 @@ struct AgeSelectionView: View {
 
 #Preview {
     AgeSelectionView(
-        signUpData: SignUpData(),  // Dummy model instance
-        path: .constant(NavigationPath())  // Dummy binding
+        signUpData: SignUpData(), onContinue: {}  // Dummy model instance
+//        path: .constant(NavigationPath())  // Dummy binding
     )
 }

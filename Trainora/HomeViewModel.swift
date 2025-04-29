@@ -13,6 +13,7 @@ class HomeViewModel: ObservableObject {
     @Published var motivationalQuote: String = ""
     @Published var workoutOfTheDay: String = ""
     @Published var progressSummary: String = ""
+    @Published var plannedWorkoutCount: Int = 3
 
     // A static list of quotes (you can later load from JSON, API, etc.)
     private let motivationalQuotes = [

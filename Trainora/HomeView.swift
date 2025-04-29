@@ -88,6 +88,62 @@ struct HomeView: View {
                         .shadow(
                             color: Color.black.opacity(0.1), radius: 8, x: 0,
                             y: 4)
+                        
+                        NavigationLink(destination: PlannerView()) {
+                            VStack(alignment: .leading, spacing: 12) {
+                                HStack {
+                                    VStack(alignment: .leading, spacing: 6) {
+                                        Text("Your Workout Planner")
+                                            .font(.subheadline)
+                                            .foregroundColor(.secondary)
+
+                                        Text("Plan and Edit Workouts")
+                                            .font(.title3)
+                                            .fontWeight(.semibold)
+                                            .foregroundColor(.primary)
+
+                                        // 🔥 Dynamic Badge
+                                        if viewModel.plannedWorkoutCount > 0 {
+                                            Text("\(viewModel.plannedWorkoutCount) Workouts Planned")
+                                                .font(.caption)
+                                                .padding(.horizontal, 8)
+                                                .padding(.vertical, 4)
+                                                .background(Color.green.opacity(0.2))
+                                                .foregroundColor(.green)
+                                                .cornerRadius(6)
+                                        } else {
+                                            Text("No Workouts Planned")
+                                                .font(.caption)
+                                                .padding(.horizontal, 8)
+                                                .padding(.vertical, 4)
+                                                .background(Color.red.opacity(0.2))
+                                                .foregroundColor(.red)
+                                                .cornerRadius(6)
+                                        }
+                                    }
+
+                                    Spacer()
+
+                                    Image(systemName: "calendar.badge.clock")
+                                        .font(.largeTitle)
+                                        .foregroundColor(.purple)
+                                }
+                            }
+                            .padding()
+                            .background(
+                                LinearGradient(
+                                    gradient: Gradient(colors: [
+                                        Color.white.opacity(0.8),
+                                        Color.purple.opacity(0.2),
+                                    ]),
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                )
+                            )
+                            .cornerRadius(15)
+                            .shadow(color: Color.black.opacity(0.1), radius: 8, x: 0, y: 4)
+                        }
+
 
                         // Motivational Quote
                         VStack(alignment: .leading, spacing: 10) {

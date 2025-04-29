@@ -9,8 +9,8 @@ import SwiftUI
 
 struct WeightSelectionView: View {
     @ObservedObject var signUpData: SignUpData
-    @Binding var path: NavigationPath
     @State private var selectedWeight: Int = 65
+    var onContinue: () -> Void
 
     var body: some View {
         VStack(spacing: 30) {
@@ -40,8 +40,7 @@ struct WeightSelectionView: View {
 
             Button(action: {
                 signUpData.weight = selectedWeight
-                print("SignUp Completed!")
-                path.append(SignUpStep.summary)
+                onContinue()
             }) {
                 Text("Finish Sign Up")
                     .frame(maxWidth: .infinity)
@@ -59,7 +58,6 @@ struct WeightSelectionView: View {
 
 #Preview {
     WeightSelectionView(
-        signUpData: SignUpData(),
-                        path: .constant(NavigationPath())
+        signUpData: SignUpData(), onContinue: {}
     )
 }

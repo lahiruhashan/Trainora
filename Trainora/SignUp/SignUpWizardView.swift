@@ -9,29 +9,41 @@ import SwiftUI
 
 struct SignUpWizardView: View {
     @StateObject private var signUpData = SignUpData()
-    @State private var path = NavigationPath()
     @EnvironmentObject var appState: AppState
+    @State private var currentStep: SignUpStep = .email
 
     var body: some View {
-        NavigationStack(path: $path) {
-            SignUpView(signUpData: signUpData, path: $path)
-                .navigationDestination(for: SignUpStep.self) { step in
-                    switch step {
-                    case .age:
-                        AgeSelectionView(signUpData: signUpData, path: $path)
-                    case .gender:
-                        GenderSelectionView(signUpData: signUpData, path: $path)
-                    case .height:
-                        HeightSelectionView(signUpData: signUpData, path: $path)
-                    case .weight:
-                        WeightSelectionView(signUpData: signUpData, path: $path)
-                    case .summary:
-                        SummaryView(signUpData: signUpData)
-                    case .email:
-                        EmptyView()
-                    }
+        VStack {
+            switch currentStep {
+            case .email:
+                SignUpView(signUpData: signUpData) {
+                    currentStep = .gender
                 }
+            case .gender:
+                GenderSelectionView(signUpData: signUpData) {
+                    currentStep = .age
+                }
+            case .age:
+                AgeSelectionView(signUpData: signUpData) {
+                    currentStep = .height
+                }
+            case .height:
+                HeightSelectionView(signUpData: signUpData) {
+                    currentStep = .weight
+                }
+            case .weight:
+                WeightSelectionView(signUpData: signUpData) {
+                    currentStep = .summary
+                }
+            case .summary:
+                SummaryView(signUpData: signUpData) {
+                    appState.isSignedIn = true
+                }
+
+            }
         }
+        .animation(.easeInOut, value: currentStep)
+        .transition(.slide)
     }
 }
 

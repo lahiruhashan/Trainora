@@ -15,7 +15,7 @@ struct SignUpView: View {
     @State private var passwordAgain = ""
 
     @ObservedObject var signUpData: SignUpData
-    @Binding var path: NavigationPath
+    var onContinue: () -> Void
 
     var body: some View {
         VStack(spacing: 20) {
@@ -50,7 +50,7 @@ struct SignUpView: View {
                 signUpData.lastName = lastName
                 signUpData.email = email
                 signUpData.password = password
-                path.append(2)
+                onContinue()
             }) {
                 Text("Next")
                     .frame(maxWidth: .infinity)
@@ -69,7 +69,9 @@ struct SignUpView: View {
 
 #Preview {
     SignUpView(
-        signUpData: SignUpData(),  // Dummy model instance
-        path: .constant(NavigationPath())  // Dummy binding
+        signUpData: SignUpData(), onContinue: {
+        
+        }  // Dummy model instance
+//        path: .constant(NavigationPath())  // Dummy binding
     )
 }

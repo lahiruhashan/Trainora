@@ -12,7 +12,9 @@ struct GenderSelectionView: View {
     @Environment(\.dismiss) var dismiss
 
     @ObservedObject var signUpData: SignUpData
-    @Binding var path: NavigationPath
+//    @Binding var path: NavigationPath
+    var onContinue: () -> Void
+
 
     var body: some View {
         VStack(spacing: 30) {
@@ -43,8 +45,10 @@ struct GenderSelectionView: View {
             // Continue Button
             Button(action: {
                 if let gender = selectedGender {
+//                    path.removeLast(path.count)
                     signUpData.gender = gender
-                    path.append(3)
+                    onContinue()
+//                    path.append(SignUpStep.age)
                 }
             }) {
                 Text("Continue")
@@ -95,7 +99,7 @@ struct GenderOptionButton: View {
 
 #Preview {
     GenderSelectionView(
-        signUpData: SignUpData(),  // Dummy model instance
-        path: .constant(NavigationPath())  // Dummy binding
+        signUpData: SignUpData() , onContinue: {} // Dummy model instance
+//        path: .constant(NavigationPath())  // Dummy binding
     )
 }

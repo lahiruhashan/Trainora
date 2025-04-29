@@ -11,6 +11,7 @@ struct SignInView: View {
     @State private var email = ""
     @State private var password = ""
     @State private var showSignUp = false
+    @EnvironmentObject var appState: AppState
 
     var body: some View {
         NavigationStack {
@@ -29,7 +30,7 @@ struct SignInView: View {
                 StyledSecureField(placeholder: "Password", text: $password, iconName: "lock.fill")
 
                 Button(action: {
-                    print("Log In action here")
+                    handleSignIn()
                 }) {
                     Text("Sign In")
                         .frame(maxWidth: .infinity)
@@ -56,6 +57,11 @@ struct SignInView: View {
             .padding()
         }
     }
+    
+    func handleSignIn() {
+            print("Signed in with: \(email)")
+            appState.isSignedIn = true  // ✅ Navigates to Home screen
+        }
 }
 
 

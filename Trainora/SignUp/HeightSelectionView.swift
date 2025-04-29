@@ -9,8 +9,8 @@ import SwiftUI
 
 struct HeightSelectionView: View {
     @ObservedObject var signUpData: SignUpData
-    @Binding var path: NavigationPath
     @State private var selectedHeight: Int = 170
+    var onContinue: () -> Void
 
     var body: some View {
         VStack(spacing: 30) {
@@ -40,7 +40,7 @@ struct HeightSelectionView: View {
 
             Button(action: {
                 signUpData.height = selectedHeight
-                path.append(SignUpStep.weight)
+                onContinue()
             }) {
                 Text("Continue")
                     .frame(maxWidth: .infinity)
@@ -58,7 +58,6 @@ struct HeightSelectionView: View {
 
 #Preview {
     HeightSelectionView(
-        signUpData: SignUpData(),
-        path: .constant(NavigationPath())
+        signUpData: SignUpData(), onContinue: {}
     )
 }
