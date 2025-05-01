@@ -43,19 +43,3 @@ struct ExerciseCardView: View {
         .shadow(color: Color.black.opacity(0.1), radius: 6, x: 0, y: 4)
     }
 }
-
-struct Exercise: Identifiable, Equatable {
-    var id = UUID()
-    var calories: Int
-    var title: String
-    var duration: Int
-}
-
-
-#Preview {
-    ExerciseCardView(
-        exercise: Exercise(calories: 120, title: "Upper Body", duration: 25)
-    )
-    .padding()
-    .background(Color.gray.opacity(0.2))
-}

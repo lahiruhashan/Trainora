@@ -1,0 +1,1 @@
+////  ExerciseCategory.swift//  Trainora////  Created by user266021 on 5/1/25.//import Foundationstruct ExerciseCategory: Identifiable, Equatable {    let id: UUID    let title: String    let imageName: String    let level: ExperienceLevel    let totalExercises: Int    let totalCalories: Double    let totalDuration: Double    var isFavorite: Bool}

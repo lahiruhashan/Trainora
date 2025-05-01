@@ -1,0 +1,1 @@
+////  Exercise.swift//  Trainora////  Created by user266021 on 5/1/25.//import Foundationstruct Exercise: Identifiable, Equatable {    let id: UUID    let title: String    let description: String    let duration: Double    let calories: Double    let reps: Int    let videoURL: URL?    let imageName: String    var isFavorite: Bool    let categoryId: UUID}

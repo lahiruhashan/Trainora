@@ -1,18 +1,1 @@
-//
-//  ExerciseLibraryView.swift
-//  Trainora
-//
-//  Created by Lahiru Hashan on 5/1/25.
-//
-
-import SwiftUI
-
-struct ExerciseLibraryView: View {
-    var body: some View {
-        Text("Hello, Exercises!")
-    }
-}
-
-#Preview {
-    ExerciseLibraryView()
-}
+// ExerciseLibraryView.swiftimport SwiftUIstruct ExerciseLibraryView: View {    @StateObject private var viewModel: CategoryListViewModel    @State private var searchText: String = ""    init(viewModel: CategoryListViewModel) {        _viewModel = StateObject(wrappedValue: viewModel)    }    var body: some View {        NavigationStack {            VStack(spacing: 0) {                // Top Segmented Control                Picker("Experience Level", selection: $viewModel.selectedLevel) {                    ForEach(ExperienceLevel.allCases, id: \ .self) { level in                        Text(level.rawValue.capitalized).tag(level)                    }                }                .pickerStyle(SegmentedPickerStyle())                .padding(.horizontal)                .onChange(of: viewModel.selectedLevel) { newValue in                    viewModel.selectLevel(newValue)                }                // Search Field                TextField("Search categories...", text: $searchText)                    .textFieldStyle(RoundedBorderTextFieldStyle())                    .padding([.horizontal, .top])                // Category Cards                ScrollView {                    LazyVStack(spacing: 12) {                        ForEach(viewModel.categories.filter { searchText.isEmpty || $0.title.localizedCaseInsensitiveContains(searchText) }) { category in                            NavigationLink(value: category.id) {                                ExerciseCategoryCardView(category: category, onFavoriteTapped: {                                    viewModel.toggleFavoriteCategory(id: category.id)                                })                            }                        }                    }                    .padding()                }            }            .navigationTitle("Exercise Library")            .navigationDestination(for: UUID.self) { categoryId in                ExerciseListView(categoryId: categoryId, service: viewModel.service)            }        }    }}

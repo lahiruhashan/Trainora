@@ -1,0 +1,1 @@
+////  ExperienceLevel.swift//  Trainora////  Created by user266021 on 5/1/25.//import Foundationenum ExperienceLevel: String, CaseIterable, Codable {    case beginner    case intermediate    case advanced}

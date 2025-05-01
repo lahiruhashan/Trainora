@@ -21,8 +21,10 @@ struct MainTabView: View {
                     Label("Home", systemImage: "house.fill")
                 }
                 .tag(Tab.home)
-
-            ExerciseLibraryView()
+            
+            NavigationStack {
+                   ExerciseLibraryTabView()
+               }
                 .tabItem {
                     Label("Library", systemImage: "book.fill")
                 }

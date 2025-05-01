@@ -196,11 +196,6 @@ struct Workout: Identifiable, Equatable {
 
 private var sampleExercises: [Exercise] {
     [
-        Exercise(calories: 120, title: "Upper Body Workout", duration: 25),
-        Exercise(calories: 90, title: "Yoga Stretch", duration: 30),
-        Exercise(calories: 150, title: "Cardio Blast", duration: 20),
-        Exercise(calories: 110, title: "Cycling Endurance", duration: 40),
-        Exercise(calories: 100, title: "Pilates Core", duration: 35),
     ]
 }
 
