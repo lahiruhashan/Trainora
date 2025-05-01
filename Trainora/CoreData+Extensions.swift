@@ -44,3 +44,9 @@ extension ExerciseEntity {
         )
     }
 }
+
+extension Double {
+    var roundedToTwoDecimals: String {
+        String(format: "%.2f", self)
+    }
+}
