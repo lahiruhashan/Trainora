@@ -12,6 +12,7 @@ struct SummaryView: View {
     @State private var isSaving = false
     @State private var signupComplete = false
     var onFinish: () -> Void
+    @Environment(\.managedObjectContext) private var viewContext
 
     var body: some View {
         VStack(spacing: 30) {
@@ -67,19 +68,25 @@ struct SummaryView: View {
     }
 
     func saveUserData() {
-        isSaving = true
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-            // Here is where you would call your real API
-            print("User signed up successfully!")
-            print("Email: \(signUpData.email)")
-            print("Password: \(signUpData.password)")
-            print("Gender: \(signUpData.gender)")
-            print("Age: \(signUpData.age)")
-            print("Height: \(signUpData.height)")
-            print("Weight: \(signUpData.weight)")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            let user = UserProfile(context: viewContext)
+            user.email = signUpData.email
+            user.password = signUpData.password
+            user.gender = signUpData.gender
+            user.age = Int16(signUpData.age)
+            user.height = Int16(signUpData.height)
+            user.weight = Int16(signUpData.weight)
 
-            isSaving = false
-            signupComplete = true
+            do {
+                try viewContext.save()
+                print("User saved to Core Data")
+
+                isSaving = false
+                signupComplete = true
+            } catch {
+                print("Failed to save user: \(error.localizedDescription)")
+                isSaving = false
+            }
         }
     }
 }

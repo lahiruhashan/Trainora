@@ -16,9 +16,18 @@ struct TrainoraApp: App {
     var body: some Scene {
         WindowGroup {
             if appState.isSignedIn {
-                HomeView()
+                MainTabView()
+                    .environment(
+                        \.managedObjectContext,
+                        persistenceController.container.viewContext
+                    )
+                    .environmentObject(appState)
             } else {
                 SignInView()
+                    .environment(
+                        \.managedObjectContext,
+                        persistenceController.container.viewContext
+                    )
                     .environmentObject(appState)
             }
         }

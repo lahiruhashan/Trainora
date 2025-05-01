@@ -111,13 +111,6 @@ struct PlannerView: View {
                         .font(.title3)
                         .fontWeight(.semibold)
 
-                    //                    Text(plannedWorkouts[dateFormatter.string(from: selectedDate)] ?? "No workout scheduled")
-                    //                        .font(.body)
-                    //                        .padding()
-                    //                        .frame(maxWidth: .infinity, alignment: .leading)
-                    //                        .background(Color.gray.opacity(0.1))
-                    //                        .cornerRadius(10)
-
                     List {
                         ForEach(
                             Array(dailyWorkouts.enumerated()), id: \.element.id
@@ -125,7 +118,6 @@ struct PlannerView: View {
                             WorkoutCardView(
                                 calories: workout.calories,
                                 title: workout.title,
-                                date: workout.date,
                                 duration: workout.duration
                             )
                             .transition(.move(edge: .trailing))
@@ -153,8 +145,11 @@ struct PlannerView: View {
                             .cornerRadius(10)
                     }
                     .sheet(isPresented: $isShowingWorkoutPicker) {
-                        ExercisePickerView(availableExercises: sampleExercises) { selectedExercise in
-                            plannedWorkouts[dateFormatter.string(from: selectedDate)] = selectedExercise.title
+                        ExercisePickerView(availableExercises: sampleExercises)
+                        { selectedExercise in
+                            plannedWorkouts[
+                                dateFormatter.string(from: selectedDate)] =
+                                selectedExercise.title
                         }
                     }
                 }
@@ -205,7 +200,7 @@ private var sampleExercises: [Exercise] {
         Exercise(calories: 90, title: "Yoga Stretch", duration: 30),
         Exercise(calories: 150, title: "Cardio Blast", duration: 20),
         Exercise(calories: 110, title: "Cycling Endurance", duration: 40),
-        Exercise(calories: 100, title: "Pilates Core", duration: 35)
+        Exercise(calories: 100, title: "Pilates Core", duration: 35),
     ]
 }
 

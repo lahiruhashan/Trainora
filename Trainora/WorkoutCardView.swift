@@ -10,8 +10,9 @@ import SwiftUI
 struct WorkoutCardView: View {
     let calories: Int
     let title: String
-    let date: String
     let duration: Int
+
+    @State private var isDone: Bool = false
 
     var body: some View {
         HStack(alignment: .center, spacing: 12) {
@@ -20,25 +21,22 @@ struct WorkoutCardView: View {
                 Circle()
                     .fill(Color.blue)
                     .frame(width: 50, height: 50)
-                Image(systemName: "figure.walk") // Change icon if needed
+                Image(systemName: "figure.walk")
                     .foregroundColor(.white)
                     .font(.title3)
             }
 
             VStack(alignment: .leading, spacing: 4) {
-                // Top Calories
                 Text("\(calories) Kcal")
                     .font(.caption)
                     .foregroundColor(.gray)
 
-                // Workout Title
                 Text(title)
                     .font(.headline)
                     .foregroundColor(.primary)
 
-                // Date
-                Text(date)
-                    .font(.caption)
+                Text("\(duration) Mins")
+                    .font(.subheadline)
                     .foregroundColor(.blue)
             }
 
@@ -46,13 +44,17 @@ struct WorkoutCardView: View {
 
             // Duration
             VStack(alignment: .trailing, spacing: 4) {
-                Text("Duration")
-                    .font(.caption)
-                    .foregroundColor(.gray)
-
-                Text("\(duration) Mins")
-                    .font(.subheadline)
-                    .foregroundColor(.blue)
+                
+                Button(action: {
+                    isDone.toggle()
+                }) {
+                    Image(
+                        systemName: isDone ? "checkmark.circle.fill" : "circle"
+                    )
+                    .foregroundColor(isDone ? .green : .gray)
+                    .font(.title2)
+                }
+                .buttonStyle(PlainButtonStyle())
             }
         }
         .padding()
@@ -67,7 +69,6 @@ struct WorkoutCardView: View {
     WorkoutCardView(
         calories: 120,
         title: "Upper Body Workout",
-        date: "June 09",
         duration: 25
     )
     .padding()
