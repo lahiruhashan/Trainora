@@ -9,6 +9,7 @@ import SwiftUI
 
 struct MainTabView: View {
     @State private var selectedTab: Tab = .home
+    @State private var navigationPath = NavigationPath()
 
     enum Tab {
         case home, library, progress, notifications, settings
@@ -16,11 +17,22 @@ struct MainTabView: View {
 
     var body: some View {
         TabView(selection: $selectedTab) {
-            HomeView()
-                .tabItem {
-                    Label("Home", systemImage: "house.fill")
+            NavigationStack(path: $navigationPath) {
+                ZStack {
+                    HomeView {
+                        navigationPath.append("profile")
+                    }
                 }
-                .tag(Tab.home)
+                .navigationDestination(for: String.self) { route in
+                    if route == "profile" {
+                        ProfileView()
+                    }
+                }
+            }
+            .tabItem {
+                Label("Home", systemImage: "house.fill")
+            }
+            .tag(Tab.home)
             
             NavigationStack {
                    ExerciseLibraryTabView()
@@ -49,6 +61,12 @@ struct MainTabView: View {
                 .tag(Tab.settings)
         }
         .accentColor(.blue) // Optional: change active color
+        .onChange(of: selectedTab) { newTab in
+            if newTab == .home {
+                navigationPath = NavigationPath() // Reset navigation
+            }
+        }
+
     }
 }
 

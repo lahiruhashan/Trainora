@@ -32,6 +32,21 @@ struct TrainoraApp: App {
     }
      */
 
+    /*
+    init() {
+        let context = persistenceController.container.viewContext
+        let profileSeeder = UserProfileSeeder(context: context)
+
+        if let url = Bundle.main.url(forResource: "user_profile_data", withExtension: "json"),
+           let data = try? Data(contentsOf: url),
+           let profileDict = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
+            
+            profileSeeder.seed(profileDict: profileDict)
+            UserDefaults.standard.set(true, forKey: "didSeedUserProfile")
+        }
+    }
+     */
+    
     var body: some Scene {
         WindowGroup {
             if appState.isSignedIn {

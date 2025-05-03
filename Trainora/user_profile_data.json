@@ -1,0 +1,14 @@
+{
+  "id": "E6D1D2D0-3C3A-4B9C-9E52-5B2AEF8924D3",
+  "fullName": "Tines Kumar",
+  "email": "tines@example.com",
+  "password": "TrainoraSecure123!",
+  "mobileNumber": "+12356789000",
+  "dateOfBirth": "1996-04-01T00:00:00Z",
+  "weight": 75,
+  "height": 165,
+  "profileImageName": "profile_pic_01.jpg", 
+  "experience": "intermediate",
+  "gender": "male",
+  "age": 28
+}

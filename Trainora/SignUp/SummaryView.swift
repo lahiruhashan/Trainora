@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CoreData
 
 struct SummaryView: View {
     @ObservedObject var signUpData: SignUpData
@@ -69,13 +70,13 @@ struct SummaryView: View {
 
     func saveUserData() {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-            let user = UserProfile(context: viewContext)
+            let user = UserProfileEntity(context: viewContext)
             user.email = signUpData.email
             user.password = signUpData.password
             user.gender = signUpData.gender
             user.age = Int16(signUpData.age)
-            user.height = Int16(signUpData.height)
-            user.weight = Int16(signUpData.weight)
+            user.height = signUpData.height
+            user.weight = signUpData.weight
 
             do {
                 try viewContext.save()

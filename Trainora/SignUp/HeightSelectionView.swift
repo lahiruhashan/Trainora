@@ -9,7 +9,7 @@ import SwiftUI
 
 struct HeightSelectionView: View {
     @ObservedObject var signUpData: SignUpData
-    @State private var selectedHeight: Int = 170
+    @State private var selectedHeight: Double = 170
     var onContinue: () -> Void
 
     var body: some View {
@@ -22,7 +22,7 @@ struct HeightSelectionView: View {
             Spacer()
 
             // Selected Height Display
-            Text("\(selectedHeight) cm")
+            Text("\(Double(selectedHeight).roundedToTwoDecimals) cm")
                 .font(.system(size: 60, weight: .bold))
                 .padding(.bottom, 10)
 

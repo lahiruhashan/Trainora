@@ -10,6 +10,7 @@ import SwiftUI
 struct HomeView: View {
     @StateObject private var viewModel = HomeViewModel()
     @EnvironmentObject var appState: AppState
+    var onProfileTapped: () -> Void
 
     var body: some View {
         NavigationView {
@@ -20,7 +21,7 @@ struct HomeView: View {
                     Spacer()
 
                     Button(action: {
-                        print("Profile tapped!")
+                        onProfileTapped()
                     }) {
                         Image(systemName: "person.crop.circle.fill")
                             .resizable()
@@ -213,5 +214,5 @@ struct HomeView: View {
 
 
 #Preview {
-    HomeView()
+ //   HomeView()
 }

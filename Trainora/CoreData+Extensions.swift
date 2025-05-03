@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import CoreData
 
 extension ExerciseCategoryEntity {
     var levelEnum: ExperienceLevel {
@@ -42,6 +43,50 @@ extension ExerciseEntity {
             isFavorite: self.isFavorite,
             categoryId: self.categoryId ?? UUID()
         )
+    }
+}
+
+extension UserProfileEntity {
+    var experienceLevel: ExperienceLevel {
+        get { ExperienceLevel(rawValue: experience ?? "beginner") ?? .beginner }
+        set { experience = newValue.rawValue }
+    }
+    
+    var genderEnum: Gender {
+        get { Gender(rawValue: gender ?? "other") ?? .other }
+        set { gender = newValue.rawValue }
+    }
+    
+    func toDomain() -> UserProfile {
+        return UserProfile(
+            id: id ?? UUID(),
+            fullName: fullName ?? "",
+            email: email ?? "",
+            mobileNumber: mobileNumber ?? "",
+            password: password ?? "",
+            dateOfBirth: dateOfBirth ?? Date(),
+            weight: Double(weight),
+            height: Double(height),
+            profileImageName: profileImageName ?? "",
+            experience: experienceLevel,
+            gender: genderEnum,
+            age: Int(age)
+        )
+    }
+
+    func update(from profile: UserProfile) {
+        self.id = profile.id
+        self.fullName = profile.fullName
+        self.email = profile.email
+        self.mobileNumber = profile.mobileNumber
+        self.password = profile.password
+        self.dateOfBirth = profile.dateOfBirth
+        self.weight = profile.weight
+        self.height = profile.height
+        self.profileImageName = profile.profileImageName
+        self.experienceLevel = profile.experience
+        self.genderEnum = profile.gender
+        self.age = Int16(profile.age)
     }
 }
 
