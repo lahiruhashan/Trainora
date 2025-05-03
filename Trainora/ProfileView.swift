@@ -35,8 +35,7 @@ struct ProfileView: View {
                     .padding([.top, .horizontal])
 
                 // Profile Image
-                Image(uiImage: UIImage(named: (viewModel.profile.profileImageName as NSString).deletingPathExtension)
-                             ?? UIImage(systemName: "person.crop.circle.fill")!)
+                Image(uiImage: ImageStorage.loadImage(named: viewModel.profile.profileImageName))
                     .resizable()
                     .aspectRatio(contentMode: .fill)
                     .frame(width: 120, height: 120)
