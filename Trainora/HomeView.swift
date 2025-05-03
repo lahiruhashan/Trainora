@@ -9,19 +9,18 @@ import SwiftUI
 
 struct HomeView: View {
     @StateObject private var viewModel = HomeViewModel()
+    @EnvironmentObject var appState: AppState
 
     var body: some View {
         NavigationView {
             VStack {
                 HStack {
-                    // App Title on the left
                     AppTitleView()
 
                     Spacer()
 
-                    // Profile Picture on the right
                     Button(action: {
-                        print("Profile tapped!")  // Future navigation to profile
+                        print("Profile tapped!")
                     }) {
                         Image(systemName: "person.crop.circle.fill")
                             .resizable()
@@ -40,9 +39,71 @@ struct HomeView: View {
                     VStack(alignment: .leading, spacing: 20) {
                         // Greeting
                         Text(greetingMessage())
-                            .font(.largeTitle)
+                            .font(.headline)
                             .fontWeight(.bold)
                             .padding(.top)
+
+                        NavigationLink(destination: PlannerView()) {
+                            VStack(alignment: .leading, spacing: 12) {
+                                HStack {
+                                    VStack(alignment: .leading, spacing: 6) {
+                                        Text("Your Workout Planner")
+                                            .font(.subheadline)
+                                            .foregroundColor(.secondary)
+
+                                        Text("Today Plan")
+                                            .font(.title3)
+                                            .fontWeight(.semibold)
+                                            .foregroundColor(.primary)
+
+                                        if viewModel.plannedWorkoutCount > 0 {
+                                            Text(
+                                                "\(viewModel.plannedWorkoutCount) Workouts Planned"
+                                            )
+                                            .font(.caption)
+                                            .padding(.horizontal, 8)
+                                            .padding(.vertical, 4)
+                                            .background(
+                                                Color.green.opacity(0.2)
+                                            )
+                                            .foregroundColor(.green)
+                                            .cornerRadius(6)
+                                        } else {
+                                            Text("No Workouts Planned")
+                                                .font(.caption)
+                                                .padding(.horizontal, 8)
+                                                .padding(.vertical, 4)
+                                                .background(
+                                                    Color.red.opacity(0.2)
+                                                )
+                                                .foregroundColor(.red)
+                                                .cornerRadius(6)
+                                        }
+                                    }
+
+                                    Spacer()
+
+                                    Image(systemName: "calendar.badge.clock")
+                                        .font(.largeTitle)
+                                        .foregroundColor(.purple)
+                                }
+                            }
+                            .padding()
+                            .background(
+                                LinearGradient(
+                                    gradient: Gradient(colors: [
+                                        Color.white.opacity(0.8),
+                                        Color.purple.opacity(0.2),
+                                    ]),
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                )
+                            )
+                            .cornerRadius(15)
+                            .shadow(
+                                color: Color.black.opacity(0.1), radius: 8,
+                                x: 0, y: 4)
+                        }
 
                         // Workout of the Day Card
                         VStack(alignment: .leading, spacing: 12) {
@@ -88,62 +149,6 @@ struct HomeView: View {
                         .shadow(
                             color: Color.black.opacity(0.1), radius: 8, x: 0,
                             y: 4)
-                        
-                        NavigationLink(destination: PlannerView()) {
-                            VStack(alignment: .leading, spacing: 12) {
-                                HStack {
-                                    VStack(alignment: .leading, spacing: 6) {
-                                        Text("Your Workout Planner")
-                                            .font(.subheadline)
-                                            .foregroundColor(.secondary)
-
-                                        Text("Plan and Edit Workouts")
-                                            .font(.title3)
-                                            .fontWeight(.semibold)
-                                            .foregroundColor(.primary)
-
-                                        // 🔥 Dynamic Badge
-                                        if viewModel.plannedWorkoutCount > 0 {
-                                            Text("\(viewModel.plannedWorkoutCount) Workouts Planned")
-                                                .font(.caption)
-                                                .padding(.horizontal, 8)
-                                                .padding(.vertical, 4)
-                                                .background(Color.green.opacity(0.2))
-                                                .foregroundColor(.green)
-                                                .cornerRadius(6)
-                                        } else {
-                                            Text("No Workouts Planned")
-                                                .font(.caption)
-                                                .padding(.horizontal, 8)
-                                                .padding(.vertical, 4)
-                                                .background(Color.red.opacity(0.2))
-                                                .foregroundColor(.red)
-                                                .cornerRadius(6)
-                                        }
-                                    }
-
-                                    Spacer()
-
-                                    Image(systemName: "calendar.badge.clock")
-                                        .font(.largeTitle)
-                                        .foregroundColor(.purple)
-                                }
-                            }
-                            .padding()
-                            .background(
-                                LinearGradient(
-                                    gradient: Gradient(colors: [
-                                        Color.white.opacity(0.8),
-                                        Color.purple.opacity(0.2),
-                                    ]),
-                                    startPoint: .topLeading,
-                                    endPoint: .bottomTrailing
-                                )
-                            )
-                            .cornerRadius(15)
-                            .shadow(color: Color.black.opacity(0.1), radius: 8, x: 0, y: 4)
-                        }
-
 
                         // Motivational Quote
                         VStack(alignment: .leading, spacing: 10) {
@@ -193,14 +198,19 @@ struct HomeView: View {
     // Dynamic Greeting based on time of day
     func greetingMessage() -> String {
         let hour = Calendar.current.component(.hour, from: Date())
+        let baseGreeting: String
+
         switch hour {
-        case 6..<12: return "Good Morning!"
-        case 12..<17: return "Good Afternoon!"
-        case 17..<22: return "Good Evening!"
-        default: return "Welcome Back!"
+        case 0..<12: baseGreeting = "Good Morning"
+        case 12..<17: baseGreeting = "Good Afternoon"
+        case 17..<24: baseGreeting = "Good Evening"
+        default: baseGreeting = "Welcome Back"
         }
+
+        return "\(baseGreeting), \(appState.loggedInUserName)!"
     }
 }
+
 
 #Preview {
     HomeView()
