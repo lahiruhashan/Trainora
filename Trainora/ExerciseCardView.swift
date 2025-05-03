@@ -17,7 +17,7 @@ struct ExerciseCardView: View {
                 Circle()
                     .fill(Color.blue)
                     .frame(width: 50, height: 50)
-                Image(systemName: "figure.walk") // Customize icons later
+                Image(systemName: "figure.walk")  // Customize icons later
                     .foregroundColor(.white)
             }
 

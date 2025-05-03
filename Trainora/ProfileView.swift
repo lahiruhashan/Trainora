@@ -7,8 +7,6 @@
 
 import SwiftUI
 
-import SwiftUI
-
 struct ProfileView: View {
     @StateObject private var viewModel = UserProfileViewModel(
         service: UserProfileService(
@@ -17,7 +15,7 @@ struct ProfileView: View {
             )
         )
     )
-    
+
     private var formattedHeight: String {
         let height = viewModel.profile.height
         return height.truncatingRemainder(dividingBy: 1) == 0
@@ -35,13 +33,17 @@ struct ProfileView: View {
                     .padding([.top, .horizontal])
 
                 // Profile Image
-                Image(uiImage: ImageStorage.loadImage(named: viewModel.profile.profileImageName))
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(width: 120, height: 120)
-                    .clipShape(Circle())
-                    .overlay(Circle().stroke(Color.white, lineWidth: 2))
-                    .shadow(radius: 4)
+                Image(
+                    uiImage: ImageStorage.loadImage(
+                        named: viewModel.profile.profileImageName
+                    )
+                )
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+                .frame(width: 120, height: 120)
+                .clipShape(Circle())
+                .overlay(Circle().stroke(Color.white, lineWidth: 2))
+                .shadow(radius: 4)
 
                 // Name and Email
                 Text(viewModel.profile.fullName)
@@ -50,21 +52,32 @@ struct ProfileView: View {
                     .font(.subheadline)
                     .foregroundColor(.gray)
 
-                Text("Birthday: \(formattedDate(viewModel.profile.dateOfBirth))")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
+                Text(
+                    "Birthday: \(formattedDate(viewModel.profile.dateOfBirth))"
+                )
+                .font(.caption)
+                .foregroundColor(.secondary)
 
                 // Stats Row
                 HStack(spacing: 12) {
-                    ProfileStatView(value: "\(Int(viewModel.profile.weight)) Kg", label: "Weight")
-                    ProfileStatView(value: "\(viewModel.age) Years", label: "Age")
+                    ProfileStatView(
+                        value: "\(Int(viewModel.profile.weight)) Kg",
+                        label: "Weight"
+                    )
+                    ProfileStatView(
+                        value: "\(viewModel.age) Years",
+                        label: "Age"
+                    )
                     ProfileStatView(value: formattedHeight, label: "Height")
                 }
                 .padding(.horizontal)
 
                 // Experience Level as Card
-                ProfileStatView(value: viewModel.profile.experience.rawValue.capitalized, label: "Experience Level")
-                    .padding(.horizontal)
+                ProfileStatView(
+                    value: viewModel.profile.experience.rawValue.capitalized,
+                    label: "Experience Level"
+                )
+                .padding(.horizontal)
 
                 Spacer()
             }
