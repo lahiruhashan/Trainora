@@ -59,9 +59,14 @@ struct SignInView: View {
     }
     
     func handleSignIn() {
+        if let url = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first {
+            print("📍 Core Data DB location: \(url)")
+        }
             print("Signed in with: \(email)")
             appState.isSignedIn = true  // ✅ Navigates to Home screen
         }
+    
+    
 }
 
 

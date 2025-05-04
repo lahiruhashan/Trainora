@@ -11,6 +11,8 @@ enum SignUpStep: Hashable {
     case gender
     case height
     case weight
+    case activityLevel
     case summary
+    case finish
 }
 

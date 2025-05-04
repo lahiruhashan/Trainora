@@ -14,6 +14,7 @@ struct SummaryView: View {
     @State private var signupComplete = false
     var onFinish: () -> Void
     @Environment(\.managedObjectContext) private var viewContext
+    @EnvironmentObject var appState: AppState
 
     var body: some View {
         VStack(spacing: 30) {
@@ -29,6 +30,8 @@ struct SummaryView: View {
                     .padding(.top)
 
                 VStack(spacing: 20) {
+                    SummaryRow(label: "First Name", value: signUpData.firstName)
+                    SummaryRow(label: "Last Name", value: signUpData.lastName)
                     SummaryRow(label: "Email", value: signUpData.email)
                     SummaryRow(label: "Gender", value: signUpData.gender)
                     SummaryRow(label: "Age", value: "\(signUpData.age) years")
@@ -36,6 +39,7 @@ struct SummaryView: View {
                         label: "Height", value: "\(signUpData.height) cm")
                     SummaryRow(
                         label: "Weight", value: "\(signUpData.weight) kg")
+                    SummaryRow(label: "Activity Level", value: signUpData.activityLevel)
                 }
                 .padding()
                 .background(Color.gray.opacity(0.1))
@@ -48,7 +52,7 @@ struct SummaryView: View {
                     print("User submitted signup!")
                     print("Data: \(signUpData)")
                     onFinish()
-                    // Here you would trigger actual signup process (API call etc.)
+                    saveUserData()
                 }) {
                     Text("Finish and Create Account")
                         .frame(maxWidth: .infinity)
@@ -75,8 +79,11 @@ struct SummaryView: View {
             user.password = signUpData.password
             user.gender = signUpData.gender
             user.age = Int16(signUpData.age)
-            user.height = signUpData.height
-            user.weight = signUpData.weight
+            user.height = Double(signUpData.height)
+            user.weight = Double(signUpData.weight)
+            user.firstName = signUpData.firstName
+            user.lastName = signUpData.lastName
+            user.experience = signUpData.activityLevel
 
             do {
                 try viewContext.save()
@@ -84,6 +91,8 @@ struct SummaryView: View {
 
                 isSaving = false
                 signupComplete = true
+                
+                appState.loggedInUserName = signUpData.firstName
             } catch {
                 print("Failed to save user: \(error.localizedDescription)")
                 isSaving = false

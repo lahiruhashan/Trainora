@@ -9,7 +9,7 @@ import SwiftUI
 
 struct WeightSelectionView: View {
     @ObservedObject var signUpData: SignUpData
-    @State private var selectedWeight: Double = 65
+    @State private var selectedWeight: Int = 65
     var onContinue: () -> Void
 
     var body: some View {
@@ -22,7 +22,7 @@ struct WeightSelectionView: View {
             Spacer()
 
             // Selected Weight Display
-            Text("\(Double(selectedWeight).roundedToTwoDecimals) kg")
+            Text("\(selectedWeight) kg")
                 .font(.system(size: 60, weight: .bold))
                 .padding(.bottom, 10)
 
@@ -39,10 +39,10 @@ struct WeightSelectionView: View {
             Spacer()
 
             Button(action: {
-                signUpData.weight = selectedWeight
+                signUpData.weight = Double(selectedWeight)
                 onContinue()
             }) {
-                Text("Finish Sign Up")
+                Text("Continue")
                     .frame(maxWidth: .infinity)
                     .padding()
                     .background(Color.blue)

@@ -60,7 +60,8 @@ extension UserProfileEntity {
     func toDomain() -> UserProfile {
         return UserProfile(
             id: id ?? UUID(),
-            fullName: fullName ?? "",
+            firstName: firstName ?? "",
+            lastName: lastName ?? "",
             email: email ?? "",
             mobileNumber: mobileNumber ?? "",
             password: password ?? "",
@@ -76,7 +77,8 @@ extension UserProfileEntity {
 
     func update(from profile: UserProfile) {
         self.id = profile.id
-        self.fullName = profile.fullName
+        self.firstName = profile.firstName
+        self.lastName = profile.lastName
         self.email = profile.email
         self.mobileNumber = profile.mobileNumber
         self.password = profile.password

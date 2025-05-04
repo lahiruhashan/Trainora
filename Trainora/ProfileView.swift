@@ -46,7 +46,9 @@ struct ProfileView: View {
                 .shadow(radius: 4)
 
                 // Name and Email
-                Text(viewModel.profile.fullName)
+                Text(viewModel.profile.firstName)
+                    .font(.title2.bold())
+                Text(viewModel.profile.lastName)
                     .font(.title2.bold())
                 Text(viewModel.profile.email)
                     .font(.subheadline)

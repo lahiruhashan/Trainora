@@ -12,6 +12,7 @@ struct SignUpCompleteView: View {
     
     var body: some View {
         VStack(spacing: 30) {
+            Spacer()
             Text("🎉")
                 .font(.system(size: 80))
 

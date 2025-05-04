@@ -16,5 +16,6 @@ class SignUpData: ObservableObject {
     @Published var age: Int = 18
     @Published var height: Double = 170
     @Published var weight: Double = 65
+    @Published var activityLevel: String = ""
 }
 

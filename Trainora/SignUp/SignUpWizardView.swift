@@ -33,13 +33,19 @@ struct SignUpWizardView: View {
                 }
             case .weight:
                 WeightSelectionView(signUpData: signUpData) {
+                    currentStep = .activityLevel
+                }
+            case .activityLevel:
+                ActivityLevelSelectionView(signUpData: signUpData) {
                     currentStep = .summary
                 }
             case .summary:
                 SummaryView(signUpData: signUpData) {
-                    appState.isSignedIn = true
+//                    appState.isSignedIn = true
+                    currentStep = .finish
                 }
-
+            case .finish:
+                SignUpCompleteView()
             }
         }
         .animation(.easeInOut, value: currentStep)
