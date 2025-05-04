@@ -12,6 +12,7 @@ struct TrainoraApp: App {
     let persistenceController = PersistenceController.shared
     @StateObject private var userSession = UserSession()
     @StateObject private var appState = AppState()
+    @StateObject private var colorSchemeManager = ColorSchemeManager()
     
     // code for sample data insert.
     /*
@@ -57,6 +58,8 @@ struct TrainoraApp: App {
                     )
                     .environmentObject(appState)
                     .environmentObject(userSession)
+                    .environmentObject(colorSchemeManager)
+                    .preferredColorScheme(colorSchemeManager.colorScheme)
             } else {
                 SignInView()
                     .environment(
@@ -65,6 +68,8 @@ struct TrainoraApp: App {
                     )
                     .environmentObject(appState)
                     .environmentObject(userSession)
+                    .environmentObject(colorSchemeManager)
+                    .preferredColorScheme(colorSchemeManager.colorScheme)
             }
         }
     }
