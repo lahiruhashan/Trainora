@@ -96,3 +96,9 @@ extension Double {
         String(format: "%.2f", self)
     }
 }
+
+extension String {
+    func localized(using manager: LocalizationManager) -> String {
+        NSLocalizedString(self, bundle: manager.bundle, comment: "")
+    }
+}

@@ -1,0 +1,18 @@
+/* 
+  Localizable.strings
+  Trainora
+
+  Created by user266021 on 5/4/25.
+  
+*/
+
+"Settings" = "සැකසුම්";
+"Appearance" = "පෙනුම";
+"Account" = "ගිණුම";
+"Notifications" = "දැනුම්දීම්";
+"Theme" = "තේමාව";
+"Change Password" = "මුරපදය වෙනස් කරන්න";
+"Language" = "භාෂාව";
+"Enable Notifications" = "දැනුම්දීම් සක්‍රිය කරන්න";
+"Reminder Time" = "අමතක නොවන වේලාව";
+"Sign Out" = "ඇතුළු වීම නවතන්න";
