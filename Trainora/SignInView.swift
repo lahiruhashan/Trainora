@@ -6,12 +6,21 @@
 //
 
 import SwiftUI
+import Combine
 
 struct SignInView: View {
     @State private var email = ""
     @State private var password = ""
     @State private var showSignUp = false
     @EnvironmentObject var appState: AppState
+    @EnvironmentObject var userSession: UserSession
+    @State private var cancellables = Set<AnyCancellable>()
+    
+    @State private var userProfileService: UserProfileService = UserProfileService(
+        repository: UserProfileRepository(
+            dataSource: CoreDataUserProfileDataSource()
+        )
+    )
 
     var body: some View {
         NavigationStack {
@@ -58,6 +67,7 @@ struct SignInView: View {
         }
     }
     
+    /*
     func handleSignIn() {
         if let url = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first {
             print("📍 Core Data DB location: \(url)")
@@ -66,7 +76,22 @@ struct SignInView: View {
             appState.isSignedIn = true  // ✅ Navigates to Home screen
         }
     
-    
+    */
+    func handleSignIn() {
+        userProfileService
+            .getUserProfile(email: email, password: password)
+            .receive(on: DispatchQueue.main)
+            .sink { profile in
+                if let profile = profile {
+                    userSession.login(with: profile)
+                    appState.isSignedIn = true
+                } else {
+                    print("⚠️ User not found.")
+                }
+            }
+            .store(in: &cancellables)
+    }
+
 }
 
 

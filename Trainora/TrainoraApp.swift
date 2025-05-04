@@ -10,7 +10,7 @@ import SwiftUI
 @main
 struct TrainoraApp: App {
     let persistenceController = PersistenceController.shared
-
+    @StateObject private var userSession = UserSession()
     @StateObject private var appState = AppState()
     
     // code for sample data insert.
@@ -56,6 +56,7 @@ struct TrainoraApp: App {
                         persistenceController.container.viewContext
                     )
                     .environmentObject(appState)
+                    .environmentObject(userSession)
             } else {
                 SignInView()
                     .environment(
@@ -63,6 +64,7 @@ struct TrainoraApp: App {
                         persistenceController.container.viewContext
                     )
                     .environmentObject(appState)
+                    .environmentObject(userSession)
             }
         }
     }

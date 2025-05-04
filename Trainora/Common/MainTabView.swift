@@ -10,6 +10,7 @@ import SwiftUI
 struct MainTabView: View {
     @State private var selectedTab: Tab = .home
     @State private var navigationPath = NavigationPath()
+    @EnvironmentObject var userSession: UserSession
 
     enum Tab {
         case home, library, progress, notifications, settings
@@ -25,7 +26,8 @@ struct MainTabView: View {
                 }
                 .navigationDestination(for: String.self) { route in
                     if route == "profile" {
-                        ProfileView()
+                        ProfileView(user: userSession.currentUser!)
+                            .environmentObject(userSession)
                     }
                 }
             }
@@ -54,7 +56,7 @@ struct MainTabView: View {
                 }
                 .tag(Tab.notifications)
 
-            ProfileView()
+            SettingView()
                 .tabItem {
                     Label("Settings", systemImage: "gearshape.fill")
                 }

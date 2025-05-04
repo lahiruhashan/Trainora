@@ -81,7 +81,6 @@ extension UserProfileEntity {
         self.lastName = profile.lastName
         self.email = profile.email
         self.mobileNumber = profile.mobileNumber
-        self.password = profile.password
         self.dateOfBirth = profile.dateOfBirth
         self.weight = profile.weight
         self.height = profile.height

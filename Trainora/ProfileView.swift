@@ -8,13 +8,16 @@
 import SwiftUI
 
 struct ProfileView: View {
-    @StateObject private var viewModel = UserProfileViewModel(
-        service: UserProfileService(
-            repository: UserProfileRepository(
-                dataSource: CoreDataUserProfileDataSource()
-            )
-        )
-    )
+    @StateObject private var viewModel: UserProfileViewModel
+
+    init(user: UserProfile) {
+           let service = UserProfileService(
+               repository: UserProfileRepository(
+                   dataSource: CoreDataUserProfileDataSource()
+               )
+           )
+           _viewModel = StateObject(wrappedValue: UserProfileViewModel(service: service, userProfile: user))
+    }
 
     private var formattedHeight: String {
         let height = viewModel.profile.height
@@ -45,15 +48,16 @@ struct ProfileView: View {
                 .overlay(Circle().stroke(Color.white, lineWidth: 2))
                 .shadow(radius: 4)
 
-                // Name and Email
-                Text(viewModel.profile.firstName)
+                // Name
+                Text("\(viewModel.profile.firstName) \(viewModel.profile.lastName)")
                     .font(.title2.bold())
-                Text(viewModel.profile.lastName)
-                    .font(.title2.bold())
+                
+                // Email
                 Text(viewModel.profile.email)
                     .font(.subheadline)
                     .foregroundColor(.gray)
-
+                
+                // Birthday
                 Text(
                     "Birthday: \(formattedDate(viewModel.profile.dateOfBirth))"
                 )

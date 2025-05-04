@@ -1,9 +1,1 @@
-//
-//  UserProfileServiceProtocol.swift
-//  Trainora
-//
-//  Created by user266021 on 5/3/25.
-//
-
-
-import Foundationimport Combineprotocol UserProfileServiceProtocol {    func getUserProfile() -> AnyPublisher<UserProfile?, Never>    func updateUserProfile(_ profile: UserProfile)}final class UserProfileService: UserProfileServiceProtocol {    private let repository: UserProfileRepositoryProtocol    init(repository: UserProfileRepositoryProtocol) {        self.repository = repository    }    func getUserProfile() -> AnyPublisher<UserProfile?, Never> {        repository.loadProfile()    }    func updateUserProfile(_ profile: UserProfile) {        repository.saveProfile(profile)    }}
+////  UserProfileServiceProtocol.swift//  Trainora////  Created by user266021 on 5/3/25.//import Foundationimport Combineprotocol UserProfileServiceProtocol {    func getUserProfile(email: String, password: String) -> AnyPublisher<UserProfile?, Never>    func getUserProfileByEmail(email: String) -> AnyPublisher<UserProfile?, Never>    func updateUserProfile(_ profile: UserProfile)}final class UserProfileService: UserProfileServiceProtocol {    private let repository: UserProfileRepositoryProtocol    init(repository: UserProfileRepositoryProtocol) {        self.repository = repository    }    func getUserProfile(email: String, password: String) -> AnyPublisher<UserProfile?, Never> {        repository.fetchUserProfile(email: email, password: password)    }        func getUserProfileByEmail(email: String) -> AnyPublisher<UserProfile?, Never> {        repository.fetchUserProfileByEmail(email: email)    }    func updateUserProfile(_ profile: UserProfile) {        repository.saveProfile(profile)    }}

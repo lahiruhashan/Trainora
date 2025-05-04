@@ -1,0 +1,1 @@
+////  UserSession.swift//  Trainora////  Created by user266021 on 5/4/25.//import Foundationimport SwiftUIclass UserSession: ObservableObject {    @Published var currentUser: UserProfile? = nil    func login(with profile: UserProfile) {        self.currentUser = profile    }    func logout() {        self.currentUser = nil    }}

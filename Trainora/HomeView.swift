@@ -10,6 +10,7 @@ import SwiftUI
 struct HomeView: View {
     @StateObject private var viewModel = HomeViewModel()
     @EnvironmentObject var appState: AppState
+    @EnvironmentObject var userSession: UserSession
     var onProfileTapped: () -> Void
 
     var body: some View {
@@ -23,15 +24,17 @@ struct HomeView: View {
                     Button(action: {
                         onProfileTapped()
                     }) {
-                        Image(systemName: "person.crop.circle.fill")
-                            .resizable()
-                            .frame(width: 40, height: 40)
-                            .foregroundColor(.blue)
-                            .background(
-                                Circle()
-                                    .fill(Color.white)
-                                    .shadow(radius: 2)
+                        Image(
+                            uiImage: ImageStorage.loadImage(
+                                named: userSession.currentUser?.profileImageName
+                                    ?? ""
                             )
+                        )
+                        .resizable()
+                        .frame(width: 40, height: 40)
+                        .clipShape(Circle())
+                        .overlay(Circle().stroke(Color.white, lineWidth: 1))
+                        .shadow(radius: 2)
                     }
                 }
                 .padding(.horizontal)
@@ -102,8 +105,11 @@ struct HomeView: View {
                             )
                             .cornerRadius(15)
                             .shadow(
-                                color: Color.black.opacity(0.1), radius: 8,
-                                x: 0, y: 4)
+                                color: Color.black.opacity(0.1),
+                                radius: 8,
+                                x: 0,
+                                y: 4
+                            )
                         }
 
                         // Workout of the Day Card
@@ -144,12 +150,16 @@ struct HomeView: View {
                                     Color.blue.opacity(0.2),
                                 ]),
                                 startPoint: .topLeading,
-                                endPoint: .bottomTrailing)
+                                endPoint: .bottomTrailing
+                            )
                         )
                         .cornerRadius(15)
                         .shadow(
-                            color: Color.black.opacity(0.1), radius: 8, x: 0,
-                            y: 4)
+                            color: Color.black.opacity(0.1),
+                            radius: 8,
+                            x: 0,
+                            y: 4
+                        )
 
                         // Motivational Quote
                         VStack(alignment: .leading, spacing: 10) {
@@ -175,7 +185,8 @@ struct HomeView: View {
                                     )
                                     .frame(height: 10)
                                     .clipShape(
-                                        RoundedRectangle(cornerRadius: 5))
+                                        RoundedRectangle(cornerRadius: 5)
+                                    )
 
                                 // Progress Text
                                 Text(viewModel.progressText)
@@ -212,7 +223,6 @@ struct HomeView: View {
     }
 }
 
-
 #Preview {
- //   HomeView()
+    //   HomeView()
 }
