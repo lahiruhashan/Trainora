@@ -48,6 +48,10 @@ struct TrainoraApp: App {
     }
      */
 
+    init() {
+        NotificationManager.shared.requestAuthorization()
+    }
+
     var body: some Scene {
         WindowGroup {
             Group {
