@@ -56,7 +56,7 @@ struct MainTabView: View {
                 }
                 .tag(Tab.notifications)
 
-            SettingView()
+            SettingsView()
                 .tabItem {
                     Label("Settings", systemImage: "gearshape.fill")
                 }
