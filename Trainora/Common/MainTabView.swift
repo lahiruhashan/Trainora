@@ -9,7 +9,8 @@ import SwiftUI
 
 struct MainTabView: View {
     @State private var selectedTab: Tab = .home
-    @State private var navigationPath = NavigationPath()
+    @State private var homeNavigationPath = NavigationPath()
+    @State private var settingsNavigationPath = NavigationPath()
     @EnvironmentObject var userSession: UserSession
 
     enum Tab {
@@ -18,10 +19,11 @@ struct MainTabView: View {
 
     var body: some View {
         TabView(selection: $selectedTab) {
-            NavigationStack(path: $navigationPath) {
+            // HOME TAB
+            NavigationStack(path: $homeNavigationPath) {
                 ZStack {
                     HomeView {
-                        navigationPath.append("profile")
+                        homeNavigationPath.append("profile")
                     }
                 }
                 .navigationDestination(for: String.self) { route in
@@ -35,37 +37,48 @@ struct MainTabView: View {
                 Label("Home", systemImage: "house.fill")
             }
             .tag(Tab.home)
-            
-            NavigationStack {
-                   ExerciseLibraryTabView()
-               }
-                .tabItem {
-                    Label("Library", systemImage: "book.fill")
-                }
-                .tag(Tab.library)
 
+            // LIBRARY TAB
+            NavigationStack {
+                ExerciseLibraryTabView()
+            }
+            .tabItem {
+                Label("Library", systemImage: "book.fill")
+            }
+            .tag(Tab.library)
+
+            // PROGRESS TAB
             PlannerView()
                 .tabItem {
                     Label("Progress", systemImage: "chart.bar.fill")
                 }
                 .tag(Tab.progress)
 
+            // NOTIFICATIONS TAB
             NotificationsView()
                 .tabItem {
                     Label("Notifications", systemImage: "bell.fill")
                 }
                 .tag(Tab.notifications)
 
-            SettingsView()
-                .tabItem {
-                    Label("Settings", systemImage: "gearshape.fill")
-                }
-                .tag(Tab.settings)
+            // SETTINGS TAB
+            NavigationStack(path: $settingsNavigationPath) {
+                SettingsView()
+            }
+            .tabItem {
+                Label("Settings", systemImage: "gearshape.fill")
+            }
+            .tag(Tab.settings)
         }
-        .accentColor(.blue) // Optional: change active color
+        .accentColor(.blue)
         .onChange(of: selectedTab) { newTab in
-            if newTab == .home {
-                navigationPath = NavigationPath() // Reset navigation
+            switch newTab {
+            case .home:
+                homeNavigationPath = NavigationPath()
+            case .settings:
+                settingsNavigationPath = NavigationPath()
+            default:
+                break
             }
         }
 
