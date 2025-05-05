@@ -5,11 +5,13 @@
 //  Created by Lahiru Hashan on 4/26/25.
 //
 
+import CoreData
 import SwiftUI
 
 struct PlannerView: View {
-    // Selected Date
-    @State private var selectedDate: Date = Date()
+    // Selected Date (only date part, no time)
+    @State private var selectedDate: Date = Calendar.current.startOfDay(
+        for: Date())
 
     // Planned workouts mapped by date
     @State private var plannedWorkouts: [String: String] = [:]
@@ -17,17 +19,23 @@ struct PlannerView: View {
     // Workout Picker Sheet
     @State private var isShowingWorkoutPicker = false
 
+    @Environment(\.managedObjectContext) private var viewContext
+
+    @State private var sampleExercises: [ExerciseEntity] = []
+
     // Example dynamic workout list
-    @State private var dailyWorkouts: [Workout] = [
-        Workout(
-            calories: 120, title: "Upper Body Workout", date: "June 09",
-            duration: 25),
-        Workout(
-            calories: 90, title: "Yoga & Flexibility", date: "June 09",
-            duration: 40),
-        Workout(
-            calories: 150, title: "Cardio Blast", date: "June 09", duration: 30),
-    ]
+    //    @State private var dailyWorkouts: [Workout] = [
+    //        Workout(
+    //            calories: 120, title: "Upper Body Workout", date: "June 09",
+    //            duration: 25),
+    //        Workout(
+    //            calories: 90, title: "Yoga & Flexibility", date: "June 09",
+    //            duration: 40),
+    //        Workout(
+    //            calories: 150, title: "Cardio Blast", date: "June 09", duration: 30),
+    //    ]
+
+    @State private var dailyWorkouts: [ExerciseEntity] = []
 
     // Available Workout Options
     private let availableWorkouts = [
@@ -57,6 +65,10 @@ struct PlannerView: View {
             }
         }
         return dates
+    }
+
+    private var indexedExercises: [(Int, ExerciseEntity)] {
+        Array(dailyWorkouts.enumerated())
     }
 
     var body: some View {
@@ -94,7 +106,8 @@ struct PlannerView: View {
                                     .clipShape(Circle())
                             }
                             .onTapGesture {
-                                selectedDate = date
+                                selectedDate = Calendar.current.startOfDay(
+                                    for: date)
                             }
                         }
                     }
@@ -112,28 +125,17 @@ struct PlannerView: View {
                         .fontWeight(.semibold)
 
                     List {
-                        ForEach(
-                            Array(dailyWorkouts.enumerated()), id: \.element.id
-                        ) { index, workout in
-                            WorkoutCardView(
-                                calories: workout.calories,
-                                title: workout.title,
-                                duration: workout.duration
-                            )
-                            .transition(.move(edge: .trailing))
-                            .animation(
-                                .easeOut(duration: 0.5).delay(
-                                    0.1 * Double(index)), value: dailyWorkouts
-                            )
-                            .listRowSeparator(.hidden)  // No ugly separator lines
-                            .padding(.vertical, 4)
+                        ForEach(indexedExercises, id: \.1.id) {
+                            index, workout in
+                            WorkoutListItem(workout: workout, index: index)
                         }
                         .onDelete(perform: deleteWorkout)
-                    }.listStyle(PlainListStyle())
+                    }
 
                     Spacer()
 
                     Button(action: {
+//                        loadExercises()
                         isShowingWorkoutPicker = true
                     }) {
                         Text("Edit Workout")
@@ -145,22 +147,28 @@ struct PlannerView: View {
                             .cornerRadius(10)
                     }
                     .sheet(isPresented: $isShowingWorkoutPicker) {
-                        ExercisePickerView(availableExercises: sampleExercises)
-                        { selectedExercise in
-                            plannedWorkouts[
-                                dateFormatter.string(from: selectedDate)] =
-                                selectedExercise.title
-                        }
+//                        ExercisePickerView(availableExercises: sampleExercises) { selectedExercise in
+//                            plannedWorkouts[dateFormatter.string(from: selectedDate)] = selectedExercise.title
+                            // TODO: Optionally save to Core Data here
+//                        }
                     }
+
                 }
                 .padding()
 
                 Spacer()
             }
             .navigationTitle("Planner")
+            .onAppear {
+                loadWorkouts(for: selectedDate)
+            }
+            .onChange(of: selectedDate) { _, newDate in
+                loadWorkouts(for: selectedDate)
+            }
         }
     }
 
+    
     // Helper Functions
     private func shortWeekdayString(from date: Date) -> String {
         let formatter = DateFormatter()
@@ -184,6 +192,55 @@ struct PlannerView: View {
     private func deleteWorkout(at offsets: IndexSet) {
         dailyWorkouts.remove(atOffsets: offsets)
     }
+    
+    private func loadExercises() {
+        let request: NSFetchRequest<ExerciseEntity> = ExerciseEntity.fetchRequest()
+        do {
+            sampleExercises = try viewContext.fetch(request)
+            print("✅ Loaded \(sampleExercises.count) exercises from Core Data")
+        } catch {
+            print("❌ Failed to fetch exercises: \(error)")
+            sampleExercises = []
+        }
+    }
+
+
+    private func loadWorkouts(for date: Date) {
+        dailyWorkouts = []
+        let today = selectedDate.startOfDay
+        let request: NSFetchRequest<WorkoutEntity> =
+            WorkoutEntity.fetchRequest()
+        request.predicate = NSPredicate(format: "date == %@", date as NSDate)
+
+        do {
+            if let workout = try viewContext.fetch(request).first {
+                print("✅ Fetched workout for date: \(today)")
+                print("Workout ID: \(workout.id?.uuidString ?? "nil")")
+                print("Exercise count: \(workout.exercises?.count ?? 0)")
+
+                if let exercises = workout.exercises as? Set<ExerciseEntity> {
+                    let sortedExercises = Array(exercises).sorted {
+                        $0.title ?? "" < $1.title ?? ""
+                    }
+                    dailyWorkouts = sortedExercises
+
+                    print("✅ Loaded \(sortedExercises.count) exercises:")
+                    for exercise in sortedExercises {
+                        print(
+                            "• \(exercise.title ?? "Unnamed") | \(exercise.calories) kcal | \(exercise.duration) mins"
+                        )
+                    }
+                } else {
+                    print("⚠️ Could not cast exercises to Set<ExerciseEntity>")
+                    dailyWorkouts = []
+                }
+            }
+
+        } catch {
+            print("❌ Failed to fetch workout: \(error)")
+            dailyWorkouts = []
+        }
+    }
 }
 
 struct Workout: Identifiable, Equatable {
@@ -194,9 +251,24 @@ struct Workout: Identifiable, Equatable {
     var duration: Int
 }
 
-private var sampleExercises: [Exercise] {
-    [
-    ]
+struct WorkoutListItem: View {
+    let workout: ExerciseEntity
+    let index: Int
+
+    var body: some View {
+        WorkoutCardView(
+            calories: Int(workout.calories),
+            title: workout.title ?? "Unnamed",
+            duration: Int(workout.duration)
+        )
+        .transition(.move(edge: .trailing))
+        .animation(
+            .easeOut(duration: 0.5).delay(0.1 * Double(index)),
+            value: workout
+        )
+        .listRowSeparator(.hidden)
+        .padding(.vertical, 4)
+    }
 }
 
 #Preview {
