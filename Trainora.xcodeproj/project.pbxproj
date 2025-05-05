@@ -6,10 +6,6 @@
 	objectVersion = 77;
 	objects = {
 
-/* Begin PBXBuildFile section */
-		5088E61A2DC74CB400EB78BF /* SettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5088E6192DC74CB400EB78BF /* SettingView.swift */; };
-/* End PBXBuildFile section */
-
 /* Begin PBXContainerItemProxy section */
 		D69B5C922DB53BB700CD0068 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -28,7 +24,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		5088E6192DC74CB400EB78BF /* SettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingView.swift; sourceTree = "<group>"; };
 		D69B5C7C2DB53BB500CD0068 /* Trainora.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Trainora.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D69B5C912DB53BB700CD0068 /* TrainoraTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TrainoraTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D69B5C9B2DB53BB700CD0068 /* TrainoraUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TrainoraUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -80,7 +75,6 @@
 		D69B5C732DB53BB500CD0068 = {
 			isa = PBXGroup;
 			children = (
-				5088E6192DC74CB400EB78BF /* SettingView.swift */,
 				D69B5C7E2DB53BB500CD0068 /* Trainora */,
 				D69B5C942DB53BB700CD0068 /* TrainoraTests */,
 				D69B5C9E2DB53BB700CD0068 /* TrainoraUITests */,
@@ -198,6 +192,8 @@
 			knownRegions = (
 				en,
 				Base,
+				ta,
+				si,
 			);
 			mainGroup = D69B5C732DB53BB500CD0068;
 			minimizedProjectReferenceProxies = 1;
@@ -242,7 +238,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5088E61A2DC74CB400EB78BF /* SettingView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

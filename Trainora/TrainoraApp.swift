@@ -12,6 +12,8 @@ struct TrainoraApp: App {
     let persistenceController = PersistenceController.shared
     @StateObject private var userSession = UserSession()
     @StateObject private var appState = AppState()
+    @StateObject private var colorSchemeManager = ColorSchemeManager()
+    @StateObject private var localizationManager = LocalizationManager()
 
     // code for sample data insert.
     /*
@@ -40,7 +42,7 @@ struct TrainoraApp: App {
         if let url = Bundle.main.url(forResource: "user_profile_data", withExtension: "json"),
            let data = try? Data(contentsOf: url),
            let profileDict = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
-
+    
             profileSeeder.seed(profileDict: profileDict)
             UserDefaults.standard.set(true, forKey: "didSeedUserProfile")
         }
@@ -53,27 +55,27 @@ struct TrainoraApp: App {
             let context = persistenceController.container.viewContext
             CoreDataSeeder.seedInitialWorkout(context: context)
         #endif
+        NotificationManager.shared.requestAuthorization()
     }
 
     var body: some Scene {
         WindowGroup {
-            if appState.isSignedIn {
-                MainTabView()
-                    .environment(
-                        \.managedObjectContext,
-                        persistenceController.container.viewContext
-                    )
-                    .environmentObject(appState)
-                    .environmentObject(userSession)
-            } else {
-                SignInView()
-                    .environment(
-                        \.managedObjectContext,
-                        persistenceController.container.viewContext
-                    )
-                    .environmentObject(appState)
-                    .environmentObject(userSession)
+            Group {
+                if appState.isSignedIn {
+                    MainTabView()
+                } else {
+                    SignInView()
+                }
             }
+            .environment(
+                \.managedObjectContext,
+                persistenceController.container.viewContext
+            )
+            .environmentObject(appState)
+            .environmentObject(userSession)
+            .environmentObject(colorSchemeManager)
+            .environmentObject(localizationManager)
+            .preferredColorScheme(colorSchemeManager.colorScheme)
         }
     }
 }

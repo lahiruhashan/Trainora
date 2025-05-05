@@ -1,0 +1,18 @@
+/* 
+  Localizable.strings
+  Trainora
+
+  Created by user266021 on 5/4/25.
+  
+*/
+
+"Settings" = "Settings";
+"Appearance" = "Appearance";
+"Account" = "Account";
+"Notifications" = "Notifications";
+"Theme" = "Theme";
+"Change Password" = "Change Password";
+"Language" = "Language";
+"Enable Notifications" = "Enable Notifications";
+"Reminder Time" = "Reminder Time";
+"Sign Out" = "Sign Out";
