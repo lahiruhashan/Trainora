@@ -9,7 +9,6 @@ import SwiftUI
 
 struct ExerciseCardView: View {
     let exercise: Exercise
-    @State private var isDone: Bool = false
 
     var body: some View {
         HStack(spacing: 12) {

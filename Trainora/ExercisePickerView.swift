@@ -8,32 +8,22 @@
 import SwiftUI
 
 struct ExercisePickerView: View {
-    let availableExercises: [Exercise]
-    var onExerciseSelected: (Exercise) -> Void
-
-    @Environment(\.presentationMode) var presentationMode
+    @Binding var availableExercises: [ExerciseEntity]
+    @Binding var isPresented: Bool
+    var onExerciseSelected: (ExerciseEntity) -> Void
 
     var body: some View {
-        NavigationView {
-            ScrollView {
-                VStack(spacing: 15) {
-                    ForEach(availableExercises) { exercise in
-                        ExerciseCardView(exercise: exercise)
-                            .onTapGesture {
-                                onExerciseSelected(exercise)
-                                presentationMode.wrappedValue.dismiss()
-                            }
-                    }
-                }
-                .padding()
+        List(availableExercises, id: \.id) { exercise in
+            Button(action: {
+                onExerciseSelected(exercise)
+                isPresented = false // dismiss the sheet
+            }) {
+                Text(exercise.title ?? "Unnamed")
             }
-            .navigationTitle("Select Exercise")
-            .navigationBarItems(trailing: Button("Cancel") {
-                presentationMode.wrappedValue.dismiss()
-            })
         }
     }
 }
+
 
 
 #Preview {

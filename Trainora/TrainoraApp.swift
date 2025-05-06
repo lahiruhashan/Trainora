@@ -53,7 +53,7 @@ struct TrainoraApp: App {
         print("HIHI")
         #if DEBUG
             let context = persistenceController.container.viewContext
-            CoreDataSeeder.seedInitialWorkout(context: context)
+            CoreDataSeeder.seedExercisesIndividually(context: context)
         #endif
         NotificationManager.shared.requestAuthorization()
     }

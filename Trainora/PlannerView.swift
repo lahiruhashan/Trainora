@@ -23,30 +23,7 @@ struct PlannerView: View {
 
     @State private var sampleExercises: [ExerciseEntity] = []
 
-    // Example dynamic workout list
-    //    @State private var dailyWorkouts: [Workout] = [
-    //        Workout(
-    //            calories: 120, title: "Upper Body Workout", date: "June 09",
-    //            duration: 25),
-    //        Workout(
-    //            calories: 90, title: "Yoga & Flexibility", date: "June 09",
-    //            duration: 40),
-    //        Workout(
-    //            calories: 150, title: "Cardio Blast", date: "June 09", duration: 30),
-    //    ]
-
     @State private var dailyWorkouts: [ExerciseEntity] = []
-
-    // Available Workout Options
-    private let availableWorkouts = [
-        "Cardio Session",
-        "Strength Training",
-        "Yoga & Flexibility",
-        "HIIT Workout",
-        "Cycling",
-        "Pilates",
-        "Rest Day",
-    ]
 
     private let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -135,7 +112,7 @@ struct PlannerView: View {
                     Spacer()
 
                     Button(action: {
-//                        loadExercises()
+                        loadExercises()
                         isShowingWorkoutPicker = true
                     }) {
                         Text("Edit Workout")
@@ -147,10 +124,12 @@ struct PlannerView: View {
                             .cornerRadius(10)
                     }
                     .sheet(isPresented: $isShowingWorkoutPicker) {
-//                        ExercisePickerView(availableExercises: sampleExercises) { selectedExercise in
-//                            plannedWorkouts[dateFormatter.string(from: selectedDate)] = selectedExercise.title
-                            // TODO: Optionally save to Core Data here
-//                        }
+                        ExercisePickerView(
+                            availableExercises: $sampleExercises,
+                            isPresented: $isShowingWorkoutPicker
+                        ) { selectedExercise in
+                            addExerciseToWorkout(selectedExercise, for: selectedDate)
+                        }
                     }
 
                 }
@@ -168,7 +147,6 @@ struct PlannerView: View {
         }
     }
 
-    
     // Helper Functions
     private func shortWeekdayString(from date: Date) -> String {
         let formatter = DateFormatter()
@@ -190,20 +168,69 @@ struct PlannerView: View {
 
     // Swipe to delete function
     private func deleteWorkout(at offsets: IndexSet) {
-        dailyWorkouts.remove(atOffsets: offsets)
+        for index in offsets {
+            let exerciseToDelete = indexedExercises[index].1
+
+            // Get the workout associated with this date
+            guard
+                let workout = exerciseToDelete.workout?.allObjects
+                    .compactMap({ $0 as? WorkoutEntity })
+                    .first(where: { $0.date == selectedDate.startOfDay })
+            else {
+                print("⚠️ No matching workout found for selected date.")
+                return
+            }
+
+            // 🔍 Debug Print: Workout details
+            print("📆 Workout to update/remove exercise from:")
+            print("- ID: \(workout.id?.uuidString ?? "nil")")
+            print("- Date: \(workout.date?.description ?? "nil")")
+            print(
+                "- Exercise count before removal: \(workout.exercises?.count ?? 0)"
+            )
+            if let exercises = workout.exercises as? Set<ExerciseEntity> {
+                for ex in exercises {
+                    print("   - \(ex.title ?? "Unnamed")")
+                }
+            }
+
+            // Remove the specific exercise from this workout
+            workout.removeFromExercises(exerciseToDelete)
+
+            // If no workouts remain, remove the exercise entirely
+            let remainingWorkouts = exerciseToDelete.workout?.count ?? 0
+            if remainingWorkouts == 1 {
+                viewContext.delete(exerciseToDelete)
+                print("🗑️ Exercise deleted from Core Data.")
+            } else {
+                print(
+                    "🔗 Exercise still belongs to other workouts. Not deleted.")
+            }
+
+            // Save and refresh
+            do {
+                try viewContext.save()
+                print("✅ Workout updated.")
+                loadWorkouts(for: selectedDate)
+            } catch {
+                print("❌ Failed to update workout: \(error)")
+            }
+        }
     }
-    
+
     private func loadExercises() {
         let request: NSFetchRequest<ExerciseEntity> = ExerciseEntity.fetchRequest()
         do {
             sampleExercises = try viewContext.fetch(request)
             print("✅ Loaded \(sampleExercises.count) exercises from Core Data")
+            for e in sampleExercises {
+                print("• \(e.title ?? "Unnamed")")
+            }
         } catch {
             print("❌ Failed to fetch exercises: \(error)")
             sampleExercises = []
         }
     }
-
 
     private func loadWorkouts(for date: Date) {
         dailyWorkouts = []
@@ -241,6 +268,50 @@ struct PlannerView: View {
             dailyWorkouts = []
         }
     }
+
+    private func addExerciseToWorkout(
+        _ exercise: ExerciseEntity, for date: Date
+    ) {
+        let dateKey = Calendar.current.startOfDay(for: date)
+
+        let request: NSFetchRequest<WorkoutEntity> =
+            WorkoutEntity.fetchRequest()
+        request.predicate = NSPredicate(format: "date == %@", dateKey as NSDate)
+
+        do {
+            let results = try viewContext.fetch(request)
+            let workout: WorkoutEntity
+
+            if let existing = results.first {
+                workout = existing
+            } else {
+                workout = WorkoutEntity(context: viewContext)
+                workout.id = UUID()
+                workout.date = dateKey
+            }
+
+            // Check if the exercise already exists in the workout's exercises set
+            if let existingExerciseSet = workout.exercises {
+                let exerciseArray =
+                    existingExerciseSet.allObjects as! [ExerciseEntity]
+                if !exerciseArray.contains(exercise) {
+                    // If the exercise isn't already associated with this workout, add it
+                    workout.addToExercises(exercise)
+                }
+            } else {
+                // If no exercises are yet associated with the workout, add the exercise
+                workout.addToExercises(exercise)
+            }
+
+            try viewContext.save()
+            print("✅ Exercise added to workout for date \(dateKey)")
+            loadWorkouts(for: dateKey)  // Refresh list
+
+        } catch {
+            print("❌ Error adding exercise: \(error)")
+        }
+    }
+
 }
 
 struct Workout: Identifiable, Equatable {

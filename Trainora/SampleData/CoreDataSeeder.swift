@@ -9,71 +9,114 @@ import Foundation
 import CoreData
 
 struct CoreDataSeeder {
-    static func seedInitialWorkout(context: NSManagedObjectContext) {
-        // Check if a workout already exists for today
-        let today = Date().startOfDay  // ✅ use date only (00:00 time)
-                print("Seeding for date: \(today)")
-        
-        print(today)
+//    static func seedInitialWorkout(context: NSManagedObjectContext) {
+//        let today = Date().startOfDay
+//        print("Seeding for date: \(today)")
+//
+//        let request: NSFetchRequest<WorkoutEntity> = WorkoutEntity.fetchRequest()
+//        request.predicate = NSPredicate(format: "date == %@", today as NSDate)
+//
+//        if let existing = try? context.fetch(request), !existing.isEmpty {
+//            print("⚠️ Workout for today already exists, skipping seeding.")
+//            return
+//        }
+//
+//        // Create WorkoutEntity
+//        let workout = WorkoutEntity(context: context)
+//        workout.id = UUID()
+//        workout.date = today
+//
+//        // Define 10 exercises
+//        let exerciseData = [
+//            ("Mountain Climbers", "figure.run", 110.0, 12.0, "Cardio warm-up"),
+//            ("Plank", "flame.fill", 60.0, 5.0, "Core strength"),
+//            ("Push-ups", "figure.strengthtraining.traditional", 95.0, 8.0, "Upper body strength"),
+//            ("Jumping Jacks", "bolt.heart", 120.0, 10.0, "Full-body cardio"),
+//            ("Burpees", "figure.highintensity.intervaltraining", 130.0, 7.0, "High intensity workout"),
+//            ("Squats", "figure.strengthtraining.functional", 80.0, 6.0, "Lower body workout"),
+//            ("Lunges", "figure.walk", 85.0, 8.0, "Leg day essential"),
+//            ("Sit-ups", "figure.core.training", 75.0, 6.0, "Abdominal exercise"),
+//            ("Jump Rope", "figure.jumprope", 150.0, 15.0, "Intense cardio"),
+//            ("Yoga Stretch", "figure.cooldown", 50.0, 10.0, "Flexibility and cool down")
+//        ]
+//
+//        var exerciseEntities: [ExerciseEntity] = []
+//
+//        for (title, imageName, calories, duration, description) in exerciseData {
+//            let exercise = ExerciseEntity(context: context)
+//            exercise.id = UUID()
+//            exercise.categoryId = UUID()
+//            exercise.title = title
+//            exercise.calories = calories
+//            exercise.duration = duration
+//            exercise.imageName = imageName
+//            exercise.reps = 0
+//            exercise.isFavorite = false
+//            exercise.exerciseDescription = description
+//            exercise.workout = workout
+//            exerciseEntities.append(exercise)
+//        }
+//
+//        // Optional: Set to workout if inverse isn't auto-managed
+//        workout.exercises = NSSet(array: exerciseEntities)
+//
+//        do {
+//            try context.save()
+//            print("✅ Seeded workout with 10 exercises for today.")
+//        } catch {
+//            print("❌ Failed to seed data: \(error)")
+//        }
+//    }
+    
+    static func seedExercisesIndividually(context: NSManagedObjectContext) {
+        // Check if any exercises already exist to avoid duplicating
+        let fetchRequest: NSFetchRequest<ExerciseEntity> = ExerciseEntity.fetchRequest()
 
-        let request: NSFetchRequest<WorkoutEntity> = WorkoutEntity.fetchRequest()
-        request.predicate = NSPredicate(format: "date == %@", today as NSDate)
+//        if let existing = try? context.fetch(fetchRequest), !existing.isEmpty {
+//            print("⚠️ Exercises already exist, skipping seeding.")
+//            return
+//        }
 
-        if let existing = try? context.fetch(request), !existing.isEmpty {
-            print(existing)
-            print("⚠️ Workout for today already exists, skipping seeding.")
-            return
+        let exerciseData: [(title: String, description: String, calories: Double, duration: Double, imageName: String)] = [
+            ("Jumping Jacks", "Full body warm-up", 100, 10, "figure.walk"),
+            ("Push Ups", "Upper body strength", 80, 5, "flame.fill"),
+            ("Squats", "Legs and glutes", 90, 8, "bolt.fill"),
+            ("Lunges", "Leg toning", 85, 7, "hare.fill"),
+            ("Sit Ups", "Core training", 70, 6, "circle.grid.cross"),
+            ("High Knees", "Cardio burst", 120, 4, "waveform.path.ecg"),
+            ("Plank", "Core stability", 60, 5, "square.grid.2x2"),
+            ("Mountain Climbers", "Cardio warm-up", 110, 12, "figure.run"),
+            ("Burpees", "Full body power", 130, 6, "flame"),
+            ("Bicycle Crunches", "Abs and obliques", 75, 5, "figure.core.training")
+        ]
+
+        for data in exerciseData {
+            let exercise = ExerciseEntity(context: context)
+            exercise.id = UUID()
+            exercise.categoryId = UUID() // Replace if linking to real categories
+            exercise.title = data.title
+            exercise.exerciseDescription = data.description
+            exercise.calories = data.calories
+            exercise.duration = data.duration
+            exercise.imageName = data.imageName
+            exercise.reps = 0
+            exercise.isFavorite = false
         }
-
-        // Create WorkoutEntity
-        let workout = WorkoutEntity(context: context)
-        workout.id = UUID()
-        workout.date = today
-
-        // Create first Exercise
-        let exercise1 = ExerciseEntity(context: context)
-        exercise1.id = UUID()
-        exercise1.categoryId = UUID()
-        exercise1.title = "Mountain Climbers"
-        exercise1.calories = 110
-        exercise1.duration = 12
-        exercise1.imageName = "figure.run"
-        exercise1.reps = 0
-        exercise1.isFavorite = false
-        exercise1.exerciseDescription = "Cardio warm-up"
-        exercise1.workout = workout // ✅ Link to workout
-
-        // Create second Exercise
-        let exercise2 = ExerciseEntity(context: context)
-        exercise2.id = UUID()
-        exercise2.categoryId = UUID()
-        exercise2.title = "Plank"
-        exercise2.calories = 60
-        exercise2.duration = 5
-        exercise2.imageName = "flame.fill"
-        exercise2.reps = 0
-        exercise2.isFavorite = false
-        exercise2.exerciseDescription = "Core strength"
-        exercise2.workout = workout // ✅ Link to workout
-
-        // ✅ Optional: explicitly add exercises to workout’s 'exercises' set
-        // Only needed if inverse relationship isn't set properly in model
-        workout.exercises = NSSet(array: [exercise1, exercise2])
-
-
 
         do {
             try context.save()
-            print("✅ Seeded workout with exercises for today.")
+            print("✅ Successfully seeded 10 standalone exercises.")
         } catch {
-            print("❌ Failed to seed data: \(error)")
+            print("❌ Failed to seed exercises: \(error)")
         }
     }
+
 }
 
 extension Date {
     var startOfDay: Date {
-        return Calendar.current.startOfDay(for: self)
+        Calendar.current.startOfDay(for: self)
     }
 }
+
 
