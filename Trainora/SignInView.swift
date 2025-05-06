@@ -12,31 +12,42 @@ struct SignInView: View {
     @State private var email = ""
     @State private var password = ""
     @State private var showSignUp = false
+    @State private var showInvalidCredentialsAlert = false
+
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var userSession: UserSession
     @State private var cancellables = Set<AnyCancellable>()
-    
-    @State private var userProfileService: UserProfileService = UserProfileService(
-        repository: UserProfileRepository(
-            dataSource: CoreDataUserProfileDataSource()
+
+    @State private var userProfileService: UserProfileService =
+        UserProfileService(
+            repository: UserProfileRepository(
+                dataSource: CoreDataUserProfileDataSource()
+            )
         )
-    )
 
     var body: some View {
         NavigationStack {
             VStack(spacing: 20) {
                 AppTitleView()
-                
+
                 Text("Sign In")
                     .font(.title)
                     .foregroundStyle(Color.blue)
                     .fontWeight(.bold)
                     .padding(.bottom, 20)
 
-                StyledTextField(placeholder: "Email", text: $email, iconName: "person.fill")
-                    .keyboardType(.emailAddress)
+                StyledTextField(
+                    placeholder: "Email",
+                    text: $email,
+                    iconName: "person.fill"
+                )
+                .keyboardType(.emailAddress)
 
-                StyledSecureField(placeholder: "Password", text: $password, iconName: "lock.fill")
+                StyledSecureField(
+                    placeholder: "Password",
+                    text: $password,
+                    iconName: "lock.fill"
+                )
 
                 Button(action: {
                     handleSignIn()
@@ -64,9 +75,15 @@ struct SignInView: View {
                 }
             }
             .padding()
+            .alert(
+                "Invalid Email or Password",
+                isPresented: $showInvalidCredentialsAlert
+            ) {
+                Button("OK", role: .cancel) {}
+            }
         }
     }
-    
+
     /*
     func handleSignIn() {
         if let url = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first {
@@ -86,15 +103,13 @@ struct SignInView: View {
                     userSession.login(with: profile)
                     appState.isSignedIn = true
                 } else {
-                    print("⚠️ User not found.")
+                    showInvalidCredentialsAlert = true
                 }
             }
             .store(in: &cancellables)
     }
 
 }
-
-
 
 #Preview {
     SignInView()
