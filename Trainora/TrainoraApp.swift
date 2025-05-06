@@ -20,14 +20,13 @@ struct TrainoraApp: App {
     init() {
         let context = persistenceController.container.viewContext
         let seeder = SampleDataSeeder(context: context)
-
-
+    
             if let url = Bundle.main.url(forResource: "beginner_sample_data", withExtension: "json"),
                let data = try? Data(contentsOf: url),
                let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
                let categories = json["categories"] as? [[String: Any]],
                let exercises = json["exercises"] as? [[String: Any]] {
-
+    
                 seeder.seed(categories: categories, exercises: exercises)
                 UserDefaults.standard.set(true, forKey: "didSeedSampleData")
             }
@@ -38,7 +37,7 @@ struct TrainoraApp: App {
     init() {
         let context = persistenceController.container.viewContext
         let profileSeeder = UserProfileSeeder(context: context)
-
+    
         if let url = Bundle.main.url(forResource: "user_profile_data", withExtension: "json"),
            let data = try? Data(contentsOf: url),
            let profileDict = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
@@ -56,6 +55,7 @@ struct TrainoraApp: App {
             CoreDataSeeder.seedExercisesIndividually(context: context)
         #endif
         NotificationManager.shared.requestAuthorization()
+        NotificationManager.shared.scheduleAllDietNotifications()
     }
 
     var body: some Scene {
@@ -75,6 +75,7 @@ struct TrainoraApp: App {
             .environmentObject(userSession)
             .environmentObject(colorSchemeManager)
             .environmentObject(localizationManager)
+            .environmentObject(NotificationStore.shared)
             .preferredColorScheme(colorSchemeManager.colorScheme)
         }
     }
