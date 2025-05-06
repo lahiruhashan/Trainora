@@ -72,10 +72,10 @@ struct CoreDataSeeder {
         // Check if any exercises already exist to avoid duplicating
         let fetchRequest: NSFetchRequest<ExerciseEntity> = ExerciseEntity.fetchRequest()
 
-//        if let existing = try? context.fetch(fetchRequest), !existing.isEmpty {
-//            print("⚠️ Exercises already exist, skipping seeding.")
-//            return
-//        }
+        if let existing = try? context.fetch(fetchRequest), !existing.isEmpty {
+            print("⚠️ Exercises already exist, skipping seeding.")
+            return
+        }
 
         let exerciseData: [(title: String, description: String, calories: Double, duration: Double, imageName: String)] = [
             ("Jumping Jacks", "Full body warm-up", 100, 10, "figure.walk"),

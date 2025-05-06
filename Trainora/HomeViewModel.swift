@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import CoreData
 
 class HomeViewModel: ObservableObject {
     // Published properties - whenever these change, the UI updates
@@ -14,6 +15,8 @@ class HomeViewModel: ObservableObject {
     @Published var workoutOfTheDay: String = ""
     @Published var progressSummary: String = ""
     @Published var plannedWorkoutCount: Int = 3
+    
+    private let context: NSManagedObjectContext
 
     // A static list of quotes (you can later load from JSON, API, etc.)
     private let motivationalQuotes = [
@@ -24,9 +27,11 @@ class HomeViewModel: ObservableObject {
         "Stay consistent. Be unstoppable."
     ]
 
-    init() {
-        loadHomeScreenData()
-    }
+    init(context: NSManagedObjectContext) {
+            self.context = context
+            loadHomeScreenData()
+            fetchTodayWorkoutCount()
+        }
 
     func loadHomeScreenData() {
         // Randomly pick a motivational quote
@@ -40,6 +45,29 @@ class HomeViewModel: ObservableObject {
         // Placeholder progress (could later be calculated from CoreData)
         progressSummary = "You have completed 2 out of 5 workouts this week."
     }
+    
+    func fetchTodayWorkoutCount() {
+            let fetchRequest: NSFetchRequest<WorkoutEntity> = WorkoutEntity.fetchRequest()
+
+            // Filter by today’s date
+            let calendar = Calendar.current
+            let startOfDay = calendar.startOfDay(for: Date())
+            let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
+
+            fetchRequest.predicate = NSPredicate(format: "date >= %@ AND date < %@", startOfDay as NSDate, endOfDay as NSDate)
+
+            do {
+                let workoutsToday = try context.fetch(fetchRequest)
+                for workout in workoutsToday {
+                    if let exercises = workout.exercises as? Set<ExerciseEntity> {
+                        plannedWorkoutCount = exercises.count
+                    }
+                }
+            } catch {
+                print("❌ Failed to fetch today's workouts: \(error)")
+                plannedWorkoutCount = 0
+            }
+        }
     
     // Numeric progress value (0.0 to 1.0 for ProgressView)
     var progressValue: Double {

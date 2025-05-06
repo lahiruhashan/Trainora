@@ -17,6 +17,9 @@ struct SignInView: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var userSession: UserSession
     @State private var cancellables = Set<AnyCancellable>()
+    @State private var emailError: String?
+    @State private var passwordError: String?
+
 
     @State private var userProfileService: UserProfileService =
         UserProfileService(
@@ -84,17 +87,12 @@ struct SignInView: View {
         }
     }
 
-    /*
     func handleSignIn() {
-        if let url = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first {
-            print("📍 Core Data DB location: \(url)")
+        guard !email.isEmpty, !password.isEmpty else {
+            showInvalidCredentialsAlert = true
+            return
         }
-            print("Signed in with: \(email)")
-            appState.isSignedIn = true  // ✅ Navigates to Home screen
-        }
-    
-    */
-    func handleSignIn() {
+
         userProfileService
             .getUserProfile(email: email, password: password)
             .receive(on: DispatchQueue.main)
@@ -102,12 +100,14 @@ struct SignInView: View {
                 if let profile = profile {
                     userSession.login(with: profile)
                     appState.isSignedIn = true
+                    appState.loggedInUserName = profile.firstName
                 } else {
                     showInvalidCredentialsAlert = true
                 }
             }
             .store(in: &cancellables)
     }
+
 
 }
 

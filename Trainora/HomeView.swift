@@ -8,10 +8,21 @@
 import SwiftUI
 
 struct HomeView: View {
-    @StateObject private var viewModel = HomeViewModel()
+    @StateObject private var viewModel: HomeViewModel
+    @Environment(\.managedObjectContext) private var context
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var userSession: UserSession
     var onProfileTapped: () -> Void
+    var onPlannerTapped: () -> Void
+    
+    init(
+        onProfileTapped: @escaping () -> Void,
+        onPlannerTapped: @escaping () -> Void
+    ) {
+        self.onProfileTapped = onProfileTapped
+        self.onPlannerTapped = onPlannerTapped
+        _viewModel = StateObject(wrappedValue: HomeViewModel(context: PersistenceController.shared.container.viewContext))
+    }
 
     var body: some View {
         NavigationView {
@@ -47,7 +58,9 @@ struct HomeView: View {
                             .fontWeight(.bold)
                             .padding(.top)
 
-                        NavigationLink(destination: PlannerView()) {
+                        Button(action: {
+                            onPlannerTapped()
+                        }) {
                             VStack(alignment: .leading, spacing: 12) {
                                 HStack {
                                     VStack(alignment: .leading, spacing: 6) {

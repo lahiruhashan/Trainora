@@ -14,6 +14,9 @@ struct SignUpView: View {
     @State private var password = ""
     @State private var passwordAgain = ""
 
+    @State private var showAlert = false
+    @State private var alertMessage = ""
+
     @ObservedObject var signUpData: SignUpData
     var onContinue: () -> Void
 
@@ -46,11 +49,21 @@ struct SignUpView: View {
                 iconName: "lock.rotation")
 
             Button(action: {
-                signUpData.firstName = firstName
-                signUpData.lastName = lastName
-                signUpData.email = email
-                signUpData.password = password
-                onContinue()
+                if firstName.isEmpty || lastName.isEmpty || email.isEmpty
+                    || password.isEmpty || passwordAgain.isEmpty
+                {
+                    alertMessage = "Please fill out all fields."
+                    showAlert = true
+                } else if password != passwordAgain {
+                    alertMessage = "Passwords do not match."
+                    showAlert = true
+                } else {
+                    signUpData.firstName = firstName
+                    signUpData.lastName = lastName
+                    signUpData.email = email
+                    signUpData.password = password
+                    onContinue()
+                }
             }) {
                 Text("Next")
                     .frame(maxWidth: .infinity)
@@ -64,14 +77,20 @@ struct SignUpView: View {
             Spacer()
         }
         .padding()
+        .alert(isPresented: $showAlert) {
+            Alert(
+                title: Text("Error"), message: Text(alertMessage),
+                dismissButton: .default(Text("OK")))
+        }
     }
 }
 
 #Preview {
     SignUpView(
-        signUpData: SignUpData(), onContinue: {
-        
+        signUpData: SignUpData(),
+        onContinue: {
+
         }  // Dummy model instance
-//        path: .constant(NavigationPath())  // Dummy binding
+        //        path: .constant(NavigationPath())  // Dummy binding
     )
 }

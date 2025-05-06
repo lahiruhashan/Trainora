@@ -24,9 +24,12 @@ struct MainTabView: View {
                     // HOME TAB
                     NavigationStack(path: $homeNavigationPath) {
                         ZStack {
-                            HomeView {
+                            HomeView (onProfileTapped: {
                                 homeNavigationPath.append("profile")
-                            }
+                            },
+                            onPlannerTapped: {
+                                selectedTab = .progress    // Switch tab!
+                            })
                         }
                         .navigationDestination(for: String.self) { route in
                             if route == "profile" {
