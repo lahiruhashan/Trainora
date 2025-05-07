@@ -45,12 +45,14 @@ struct SignInView: View {
                     iconName: "person.fill"
                 )
                 .keyboardType(.emailAddress)
+                .accessibilityIdentifier("emailTextField")
 
                 StyledSecureField(
                     placeholder: "Password",
                     text: $password,
                     iconName: "lock.fill"
                 )
+                .accessibilityIdentifier("passwordSecureField")
 
                 Button(action: {
                     handleSignIn()
@@ -63,6 +65,7 @@ struct SignInView: View {
                         .cornerRadius(10)
                 }
                 .padding(.top, 10)
+                .accessibilityIdentifier("signInButton")
 
                 Spacer()
 
@@ -76,6 +79,7 @@ struct SignInView: View {
                 .navigationDestination(isPresented: $showSignUp) {
                     SignUpWizardView()
                 }
+                .accessibilityIdentifier("signUpButton")
             }
             .padding()
             .alert(
