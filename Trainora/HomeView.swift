@@ -47,6 +47,7 @@ struct HomeView: View {
                         .overlay(Circle().stroke(Color.white, lineWidth: 1))
                         .shadow(radius: 2)
                     }
+                    .accessibilityIdentifier("profileIconButton")
                 }
                 .padding(.horizontal)
                 .padding(.top)
