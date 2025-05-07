@@ -1,0 +1,1 @@
+////  NotificationModel.swift//  Trainora////  Created by user266021 on 5/7/25.//import Foundationstruct NotificationModel: Identifiable, Codable {    let id: UUID    let type: AppNotificationType    let title: String    let body: String    let date: Date    var isSeen: Bool}

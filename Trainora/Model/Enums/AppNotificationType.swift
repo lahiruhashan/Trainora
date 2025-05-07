@@ -6,10 +6,10 @@
 //
 
 enum AppNotificationType: String, Codable {
-    case reminder
-    case dietBreakfast
-    case dietLunch
-    case dietDinner
+    case exercise
+    case breakfast
+    case lunch
+    case dinner
     case inactivity
     case appUpdate
 }
