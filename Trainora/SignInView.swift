@@ -6,27 +6,11 @@
 //
 
 import SwiftUI
-import Combine
 
 struct SignInView: View {
-    @State private var email = ""
-    @State private var password = ""
+    @ObservedObject var viewModel: SignInViewModel
+
     @State private var showSignUp = false
-    @State private var showInvalidCredentialsAlert = false
-
-    @EnvironmentObject var appState: AppState
-    @EnvironmentObject var userSession: UserSession
-    @State private var cancellables = Set<AnyCancellable>()
-    @State private var emailError: String?
-    @State private var passwordError: String?
-
-
-    @State private var userProfileService: UserProfileService =
-        UserProfileService(
-            repository: UserProfileRepository(
-                dataSource: CoreDataUserProfileDataSource()
-            )
-        )
 
     var body: some View {
         NavigationStack {
@@ -41,7 +25,7 @@ struct SignInView: View {
 
                 StyledTextField(
                     placeholder: "Email",
-                    text: $email,
+                    text: $viewModel.email,
                     iconName: "person.fill"
                 )
                 .keyboardType(.emailAddress)
@@ -49,13 +33,13 @@ struct SignInView: View {
 
                 StyledSecureField(
                     placeholder: "Password",
-                    text: $password,
+                    text: $viewModel.password,
                     iconName: "lock.fill"
                 )
                 .accessibilityIdentifier("passwordSecureField")
 
                 Button(action: {
-                    handleSignIn()
+                    viewModel.handleSignIn()
                 }) {
                     Text("Sign In")
                         .frame(maxWidth: .infinity)
@@ -84,37 +68,22 @@ struct SignInView: View {
             .padding()
             .alert(
                 "Invalid Email or Password",
-                isPresented: $showInvalidCredentialsAlert
+                isPresented: $viewModel.showInvalidCredentialsAlert
             ) {
                 Button("OK", role: .cancel) {}
             }
         }
     }
-
-    func handleSignIn() {
-        guard !email.isEmpty, !password.isEmpty else {
-            showInvalidCredentialsAlert = true
-            return
-        }
-
-        userProfileService
-            .getUserProfile(email: email, password: password)
-            .receive(on: DispatchQueue.main)
-            .sink { profile in
-                if let profile = profile {
-                    userSession.login(with: profile)
-                    appState.isSignedIn = true
-                    appState.loggedInUserName = profile.firstName
-                } else {
-                    showInvalidCredentialsAlert = true
-                }
-            }
-            .store(in: &cancellables)
-    }
-
-
 }
 
 #Preview {
-    SignInView()
+    SignInView(viewModel: SignInViewModel(
+        userProfileService: UserProfileService(
+            repository: UserProfileRepository(
+                dataSource: CoreDataUserProfileDataSource()
+            )
+        ),
+        userSession: UserSession(),
+        appState: AppState()
+    ))
 }

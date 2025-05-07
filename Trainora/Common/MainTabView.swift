@@ -14,8 +14,25 @@ struct MainTabView: View {
     @EnvironmentObject var userSession: UserSession
     @Environment(\.managedObjectContext) private var viewContext
 
+    @StateObject private var signInViewModel: SignInViewModel
+
     enum Tab {
         case home, library, progress, notifications, settings
+    }
+
+    init() {
+        // Initialize SignInViewModel with dependencies
+        _signInViewModel = StateObject(
+            wrappedValue: SignInViewModel(
+                userProfileService: UserProfileService(
+                    repository: UserProfileRepository(
+                        dataSource: CoreDataUserProfileDataSource()
+                    )
+                ),
+                userSession: UserSession(),
+                
+                appState: AppState()
+            ))
     }
 
     var body: some View {
@@ -90,8 +107,7 @@ struct MainTabView: View {
                     }
                 }
             } else {
-                // Show Sign In screen if user is logged out
-                SignInView()
+                SignInView(viewModel: signInViewModel)
             }
         }
     }
