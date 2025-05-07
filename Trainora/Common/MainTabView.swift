@@ -12,6 +12,7 @@ struct MainTabView: View {
     @State private var homeNavigationPath = NavigationPath()
     @State private var settingsNavigationPath = NavigationPath()
     @EnvironmentObject var userSession: UserSession
+    @Environment(\.managedObjectContext) private var viewContext
 
     enum Tab {
         case home, library, progress, notifications, settings
@@ -24,12 +25,14 @@ struct MainTabView: View {
                     // HOME TAB
                     NavigationStack(path: $homeNavigationPath) {
                         ZStack {
-                            HomeView (onProfileTapped: {
-                                homeNavigationPath.append("profile")
-                            },
-                            onPlannerTapped: {
-                                selectedTab = .progress    // Switch tab!
-                            })
+                            HomeView(
+                                onProfileTapped: {
+                                    homeNavigationPath.append("profile")
+                                },
+                                onPlannerTapped: {
+                                    selectedTab = .progress  // Switch tab!
+                                }
+                            )
                         }
                         .navigationDestination(for: String.self) { route in
                             if route == "profile" {
@@ -60,7 +63,7 @@ struct MainTabView: View {
                         .tag(Tab.progress)
 
                     // NOTIFICATIONS TAB
-                    NotificationsView()
+                    NotificationsView(context: viewContext)
                         .tabItem {
                             Label("Notifications", systemImage: "bell.fill")
                         }

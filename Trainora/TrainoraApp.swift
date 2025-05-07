@@ -14,7 +14,6 @@ struct TrainoraApp: App {
     @StateObject private var appState = AppState()
     @StateObject private var colorSchemeManager = ColorSchemeManager()
     @StateObject private var localizationManager = LocalizationManager()
-    @StateObject private var notifVM = NotificationViewModel()
 
     // code for sample data insert.
     /*
@@ -82,7 +81,6 @@ struct TrainoraApp: App {
             .environmentObject(userSession)
             .environmentObject(colorSchemeManager)
             .environmentObject(localizationManager)
-            .environmentObject(notifVM)
             .preferredColorScheme(colorSchemeManager.colorScheme)
         }
     }
